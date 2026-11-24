@@ -582,7 +582,7 @@ def hero():
 NAV = """
 <nav class="topnav" id="topnav" aria-label="Разделы">
   <a class="brand" href="#top"><i></i>Холст</a>
-  <a class="back" href="/">← все бонусы</a>
+  <a class="back" href="index.html">← все бонусы</a>
   <div class="tn">
     <a href="#svodka">Каталог</a><a href="#uslugi">7 услуг</a><a href="#ohotnik">Охотник</a><a href="#calc">Формула</a><a href="#pakety">Пакеты</a>
   </div>
@@ -603,7 +603,7 @@ FOOT = """
     <p>Все видео и картинки — работы агентов: сайты, ролики, макеты, переписки и оплаты. Цены — как в каталоге эфира: за пакет или за месяц.</p>
     <p>Калькулятор показывает потенциал по конверсиям, а не обещанный доход. Результаты индивидуальны.</p>
   </div>
-  <div class="foot-r"><a class="foot-up" href="/">← все бонусы</a><a class="foot-up" href="#top">наверх ↑</a></div>
+  <div class="foot-r"><a class="foot-up" href="index.html">← все бонусы</a><a class="foot-up" href="#top">наверх ↑</a></div>
 </div>
 </footer>"""
 
@@ -643,8 +643,9 @@ def page():
 
 
 # ─────────────────────────────── страница бонусов (18.11, Влад: «сайт-заглушка: вот все твои бонусы после эфира»)
-# Живёт по старой ссылке (её уже шлют менеджеры), холст переехал на /holst.
-AGENT_URL = ''  # ссылка на агента, который делает сайты (с инструкцией) — дать Мирославу; пока пусто, кнопка неактивна
+# Живёт по старой ссылке (её уже шлют менеджеры), холст — holst.html (и /holst через rewrite).
+# 24.11 Софія: «мы не даем агента после веба — это платно и входит в программу курса» → карточку агента убрали, бонусов два.
+# Ссылки между страницами относительные (holst.html / index.html), чтобы ZIP работал и с диска.
 BARIGA_URL = 'https://t.me/ai_diller_bot'
 
 
@@ -655,21 +656,15 @@ def hub_page():
         body = (f"<div class='bn-img'><img src='{img}' alt='{alt}' loading='{'eager' if n == 1 else 'lazy'}'><span class='bn-n'>{n:02d}</span></div>"
                 f"<div class='bn-t'><span class='k'>{k}</span><h2>{title}</h2><p>{text}</p>"
                 + (f"<small>{note}</small>" if note else ''))
-        if not href:
-            return (f"<div class='bn wait'>{body}<span class='pill off'>Ссылку пришлёт менеджер</span></div></div>")
         tgt = " target='_blank' rel='noopener'" if ext else ''
         return f"<a class='bn' href='{href}'{tgt}>{body}<span class='pill'>{btn}<i>→</i></span></div></a>"
 
     cards = (
-        card(1, '/holst', 'media/hero-bg.webp', 'Влад Ясько — холст AI-Оператора', 'бонус 1 · холст',
+        card(1, 'holst.html', 'media/hero-bg.webp', 'Влад Ясько — холст AI-Оператора', 'бонус 1 · холст',
              'Холст AI‑Оператора',
              'Все семь услуг, которые делают агенты: что это, сколько стоит и как выглядит. Там же — охотник, формула заработка и пакеты программы.',
              'Открыть холст')
-        + card(2, AGENT_URL, 'demo/assets-sites/molly-desk-poster.jpg', 'Сайт груминг-салона, собранный агентом', 'бонус 2 · агент',
-               'Агент, который делает сайты',
-               'С ним вы уже можете продавать первую услугу — сайты от $250. Внутри — инструкция, как его скачать и запустить.',
-               'Забрать агента', ext=True)
-        + card(3, BARIGA_URL, 'media/bariga.webp', 'AI-барыга: подписки на нейросети со скидкой', 'бонус 3 · @ai_diller_bot',
+        + card(2, BARIGA_URL, 'media/bariga.webp', 'AI-барыга: подписки на нейросети со скидкой', 'бонус 2 · @ai_diller_bot',
                'Нейросети с выгодой до 90%',
                'Подписки и готовые аккаунты на ChatGPT, Claude, Gemini, Perplexity и другие — через Telegram-бота.',
                'Открыть бота', note='Гарантий официального магазина здесь нет — это для тех, кто учится и не хочет тратить много.', ext=True))
@@ -679,11 +674,11 @@ def hub_page():
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Ваши бонусы после эфира · AI-Оператор</title>
-<meta name="description" content="Три бонуса после эфира AI-Оператор: холст с семью услугами, агент, который делает сайты, и нейросети с выгодой до 90%.">
+<meta name="description" content="Бонусы после эфира AI-Оператор: холст с семью услугами и нейросети с выгодой до 90%.">
 <meta name="theme-color" content="#0b0c0e">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Ваши бонусы после эфира · AI-Оператор">
-<meta property="og:description" content="Холст с семью услугами, агент, который делает сайты, и нейросети с выгодой до 90%.">
+<meta property="og:description" content="Холст с семью услугами, охотником и пакетами — и нейросети с выгодой до 90%.">
 <meta property="og:image" content="https://ai-operator-holst.vercel.app/media/og-bonus.jpg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -695,7 +690,7 @@ def hub_page():
 <header class="top"><div class="wrap">
   <span class="eyebrow k"><i></i>после эфира · AI-Оператор</span>
   <h1>Все ваши бонусы <em>после эфира</em></h1>
-  <p class="lead">Три подарка — у каждого своя кнопка. <b>Начните с первого:</b> там всё, что было на эфире.</p>
+  <p class="lead">Два подарка — у каждого своя кнопка. <b>Начните с первого:</b> там всё, что было на эфире.</p>
 </div></header>
 <main class="wrap list">{cards}</main>
 <footer class="foot"><div class="wrap">
@@ -717,4 +712,4 @@ if __name__ == '__main__':
                     "rewrites": [{"source": "/holst", "destination": "/holst.html"}],
                     "redirects": [{"source": "/holst/", "destination": "/holst", "permanent": False}]}, indent=1))
     print(f'site/holst.html: {len(out) / 1024:.1f} КБ, услуг {len(USLUGI)}; site/index.html (бонусы): {len(hub) / 1024:.1f} КБ'
-          + ('' if AGENT_URL else ' · AGENT_URL пуст — кнопка агента неактивна'))
+)
