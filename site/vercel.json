@@ -1,0 +1,19 @@
+{
+ "framework": null,
+ "buildCommand": null,
+ "outputDirectory": ".",
+ "cleanUrls": false,
+ "rewrites": [
+  {
+   "source": "/holst",
+   "destination": "/holst.html"
+  }
+ ],
+ "redirects": [
+  {
+   "source": "/holst/",
+   "destination": "/holst",
+   "permanent": false
+  }
+ ]
+}

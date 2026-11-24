@@ -1,0 +1,734 @@
+<!doctype html><html><head><!-- /frame-runtime --><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style id="deck-accent">:root{--acc-rgb:253,213,6!important;--acc-dim:#7a6300!important;--acc-ink:#0b0907!important;--bg:#0b0907!important;--bg-2:#110d0a!important;--panel:#15110d!important;--edge:#2a2420!important;--edge-soft:#1c1713!important}html{scrollbar-width:thin;scrollbar-color:#3a3129 transparent}</style></head><body>
+<title>Движок AI-дизайна</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+:root{
+  --bg:#080B0A;
+  --bg-2:#0D1211;
+  --panel:#121817;
+  --edge:#1F2A27;
+  --edge-soft:#18211F;
+  --text:#F2F6F4;
+  --dim:#8C9B96;
+  --faint:#5C6B66;
+  --acc:#FDD506;
+  --acc-dim:#7a6300;
+  --acc-glow:rgba(253,213,6,.14);
+  --f-ui:"Manrope","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f-ui);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+@media (max-width:700px){.wrap{padding:0 16px}}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* шапка */
+.top{position:relative;padding:54px 0 34px;background:radial-gradient(900px 380px at 50% -140px, var(--acc-glow), transparent 70%)}
+.tag{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--acc-dim);border-radius:999px;padding:6px 16px;font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;color:var(--acc);text-transform:uppercase}
+.top h1{font-size:clamp(30px,4.6vw,54px);font-weight:800;letter-spacing:-.03em;margin:18px 0 12px;line-height:1.03;text-wrap:balance}
+.top h1 em{font-style:normal;color:var(--acc)}
+.top p{margin:0;color:var(--dim);max-width:58ch;font-size:clamp(15px,1.5vw,18px)}
+
+/* рельса */
+.rail{height:700vh}
+.pin{position:sticky;top:0;height:100svh;display:flex;align-items:center;padding:14px 0 22px}
+.stage{position:relative;width:100%;height:min(830px,calc(100svh - 40px));min-height:560px;background:var(--bg-2);border:1px solid var(--edge);border-radius:20px;overflow:hidden;box-shadow:0 40px 90px -60px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.03)}
+
+/* конвейер */
+.pipe{height:58px;flex-shrink:0;border-bottom:1px solid var(--edge-soft);display:flex;align-items:center;gap:18px;padding:0 20px;background:var(--panel)}
+.pipe .brand{font-size:13px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.pipe .brand i{width:8px;height:8px;border-radius:50%;background:var(--acc);display:block}
+.nodes{display:flex;align-items:center;flex:1;min-width:0}
+.node-wrap{position:relative;display:flex;align-items:center;flex:1;min-width:0}
+.node-wrap:last-child{flex:0 0 auto}
+.bead{width:9px;height:9px;border-radius:50%;background:var(--edge);flex-shrink:0;box-shadow:0 0 0 0 var(--acc-glow)}
+.wire{height:1px;background:var(--edge);flex:1;position:relative;overflow:hidden}
+.wire i{position:absolute;inset:0;background:var(--acc);transform-origin:left;transform:scaleX(0)}
+.node-wrap .cap{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);position:absolute;white-space:nowrap;left:0;top:12px}
+@media (max-width:900px){.node-wrap .cap{display:none}}
+.pipe .clock{font-family:var(--f-mono);font-size:11px;color:var(--faint);white-space:nowrap}
+
+/* тело */
+.body{display:grid;grid-template-columns:296px minmax(0,1fr);height:calc(100% - 58px)}
+@media (max-width:1000px){.body{grid-template-columns:1fr}}
+.log{border-right:1px solid var(--edge-soft);background:var(--panel);position:relative;overflow:hidden;padding:18px 0}
+@media (max-width:1000px){.log{display:none}}
+.log-head{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);padding:0 18px 12px}
+.log-tape{padding:0 18px;will-change:transform}
+.log-line{font-family:var(--f-mono);font-size:11.5px;line-height:1.5;color:var(--dim);padding:5px 0 5px 14px;position:relative;opacity:0}
+.log-line::before{content:"";position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:var(--acc-dim)}
+.log-line b{color:var(--acc);font-weight:500}
+.log-line.done::before{background:var(--acc)}
+
+/* сцены */
+.work{position:relative;overflow:hidden;background:var(--bg-2)}
+.scene{position:absolute;inset:0;background:var(--bg-2);opacity:0;display:flex;flex-direction:column;justify-content:center;gap:clamp(12px,2.2vh,20px);padding:clamp(24px,3.6vh,38px) 42px}
+@media (max-width:700px){.scene{padding:26px 20px}}
+.scene-kicker{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--acc)}
+.scene h2{font-size:clamp(20px,2.4vw,30px);font-weight:800;letter-spacing:-.025em;margin:0;line-height:1.12;text-wrap:balance}
+.scene .sub{margin:-8px 0 0;color:var(--dim);font-size:13.5px;max-width:76ch;line-height:1.45}
+
+/* 1 · задача */
+.brief-field{border:1px solid var(--edge);background:var(--panel);border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:12px;font-family:var(--f-mono);font-size:clamp(13px,1.45vw,17px);max-width:680px}
+.brief-field .car{width:2px;height:1.15em;background:var(--acc);flex-shrink:0}
+.brief-chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.05em;color:var(--dim);border:1px solid var(--edge);border-radius:999px;padding:5px 12px;background:var(--panel);opacity:0}
+
+/* 2 · карта */
+.trend-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,268px);gap:20px;align-items:center}
+@media (max-width:900px){.trend-grid{grid-template-columns:1fr}}
+.map-wrap{position:relative;width:100%;max-width:min(440px,100%)}
+.map-cap{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-top:6px}
+.map{position:relative;width:100%;aspect-ratio:64/24;
+  -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 var(--rv,0%),transparent calc(var(--rv,0%) + 14%));
+  mask-image:linear-gradient(90deg,#000 0%,#000 var(--rv,0%),transparent calc(var(--rv,0%) + 14%))}
+.land{position:absolute;border-radius:50%;background:#1B2A25;transform:translate(-50%,-50%)}
+.city{position:absolute;transform:translate(-50%,-50%);opacity:0}
+.city i{display:block;width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px rgba(253,213,6,.16)}
+.city span{position:absolute;left:12px;top:-5px;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.06em;color:var(--text);white-space:nowrap}
+.city.flip span{left:auto;right:12px}
+.groups{display:grid;grid-template-columns:1fr;gap:8px}
+.grp{border:1px solid var(--edge);background:var(--panel);border-radius:12px;padding:11px 13px;opacity:0}
+.grp b{display:block;font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.grp span{display:block;font-family:var(--f-mono);font-size:9.5px;color:var(--acc);margin:4px 0 5px;letter-spacing:.06em}
+.grp p{margin:0;font-size:12.5px;color:var(--dim);line-height:1.45}
+.grp p i{font-style:normal;color:var(--acc);font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-right:5px}
+.counters{display:flex;gap:clamp(16px,2.4vw,26px);flex-wrap:wrap}
+.counter b{display:block;font-family:var(--f-mono);font-size:clamp(16px,1.7vw,21px);font-weight:500;letter-spacing:-.02em}
+.counter span{display:block;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:4px}
+
+/* 3 · смыслы */
+.vals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.vals{grid-template-columns:1fr}}
+.val{border:1px solid var(--edge);background:var(--panel);border-radius:14px;padding:17px;opacity:0}
+.val .n{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;color:var(--faint)}
+.val b{display:block;font-size:14.5px;font-weight:700;margin:9px 0 6px;letter-spacing:-.01em}
+.val p{margin:0;font-size:12.5px;color:var(--dim);line-height:1.45}
+.val.axis{border-color:var(--acc-dim);background:linear-gradient(180deg,rgba(253,213,6,.07),transparent)}
+.axis-line{border-top:1px solid var(--edge-soft);padding-top:15px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;opacity:0}
+.axis-line span{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.axis-line b{font-size:clamp(17px,2.1vw,23px);font-weight:800;letter-spacing:-.02em}
+.axis-line b em{font-style:normal;color:var(--acc)}
+
+/* 4 · идеи */
+.ideas{display:flex;flex-direction:column;gap:1px;background:var(--edge-soft);border:1px solid var(--edge);border-radius:14px;overflow:hidden}
+.idea-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:18px;background:var(--panel);padding:13px 17px;opacity:0}
+@media (max-width:760px){.idea-row{grid-template-columns:1fr;gap:5px}}
+.idea-row .say{font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.idea-row .shot{font-size:12.5px;color:var(--dim);display:flex;align-items:baseline;gap:9px}
+.idea-row .shot::before{content:"→";color:var(--acc);font-family:var(--f-mono);font-size:11px}
+.idea-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:18px;padding:0 17px 2px;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+@media (max-width:760px){.idea-head{display:none}}
+.spec{border:1px solid var(--edge);background:var(--panel);border-radius:12px;padding:13px 16px;font-family:var(--f-mono);font-size:11.5px;line-height:1.6;color:var(--dim);opacity:0}
+.spec k{color:var(--acc);font-style:normal}
+
+/* 5 · фотосессия */
+.shoot{display:grid;grid-template-columns:186px minmax(0,1fr);gap:20px;align-items:center}
+@media (max-width:860px){.shoot{grid-template-columns:1fr}}
+.lbl{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:9px}
+.slot{position:relative;border:1px solid var(--edge);border-radius:12px;overflow:hidden;background:var(--panel);display:flex;align-items:center;justify-content:center}
+.slot img{width:100%;height:100%;object-fit:cover;display:block}
+.slot .ph{font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;color:var(--faint);text-align:center;padding:8px;line-height:1.5}
+.slot.portrait{aspect-ratio:3/4}
+.shots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.cell{position:relative;aspect-ratio:3/4;border:1px solid var(--edge);border-radius:11px;overflow:hidden;background:var(--panel);opacity:0}
+.cell .idea{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:9px;text-align:center;font-family:var(--f-mono);font-size:9.5px;line-height:1.45;color:var(--dim)}
+.cell .pic{position:absolute;inset:0;opacity:0;display:flex;align-items:center;justify-content:center;background:#161D1B}
+.cell .pic img{width:100%;height:100%;object-fit:cover}
+.cell .pic .ph{font-family:var(--f-mono);font-size:8.5px;color:var(--faint);letter-spacing:.08em;text-align:center;padding:8px}
+.note{font-family:var(--f-mono);font-size:10.5px;color:var(--faint);letter-spacing:.04em}
+.note b{color:var(--acc);font-weight:500}
+
+/* 6 · дизайнер */
+.design{display:grid;grid-template-columns:minmax(0,250px) minmax(0,1fr);gap:22px;align-items:center}
+@media (max-width:860px){.design{grid-template-columns:1fr}}
+.compose{position:relative;aspect-ratio:4/5;border-radius:14px;overflow:hidden;border:1px solid var(--edge);background:var(--panel)}
+.compose img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.compose .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;color:var(--faint)}
+.compose .grid-ov{position:absolute;inset:0;opacity:0;background-image:linear-gradient(rgba(253,213,6,.26) 1px,transparent 1px),linear-gradient(90deg,rgba(253,213,6,.26) 1px,transparent 1px);background-size:33.33% 25%}
+.compose .plate{position:absolute;left:0;right:0;bottom:0;height:50%;opacity:0;background:linear-gradient(180deg,transparent,rgba(5,9,8,.94) 45%)}
+.compose .copy{position:absolute;left:15px;right:15px;bottom:15px;opacity:0}
+.compose .copy b{display:block;font-size:16px;font-weight:800;letter-spacing:-.02em;line-height:1.16}
+.compose .copy b em{font-style:normal;color:var(--acc)}
+.compose .copy span{display:block;font-family:var(--f-mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-top:7px}
+.formats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;align-items:end}
+.fmt{opacity:0}
+.fmt .slot{border-radius:10px;display:block;position:relative}
+.fmt .slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fmt .mini-grad{position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(5,9,8,.9))}
+.fmt .mini-copy{position:absolute;left:8px;right:8px;bottom:7px;font-size:10.5px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
+.fmt .mini-copy em{font-style:normal;color:var(--acc)}
+.fmt .slot.sq{aspect-ratio:1/1}
+.fmt .slot.wide{aspect-ratio:16/9}
+.fmt .slot.tall{aspect-ratio:9/16}
+.fmt .cap{font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:7px}
+
+/* 7 · итог */
+.total{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;opacity:0}
+.total b{font-size:clamp(30px,4.4vw,50px);font-weight:800;letter-spacing:-.035em;line-height:1}
+.total b em{font-style:normal;color:var(--acc)}
+.total span{font-size:14px;color:var(--dim)}
+.kit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+@media (max-width:760px){.kit{grid-template-columns:1fr}}
+.kit div{border:1px solid var(--edge);background:var(--panel);border-radius:12px;padding:11px 14px;opacity:0}
+.kit b{display:block;font-size:13px;font-weight:700;letter-spacing:-.01em}
+.kit span{display:block;font-size:11px;color:var(--faint);margin-top:3px;line-height:1.38}
+.price{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-top:1px solid var(--edge-soft);padding-top:16px;opacity:0}
+.price b{font-size:clamp(20px,2.7vw,29px);font-weight:800;letter-spacing:-.025em;color:var(--acc)}
+.price span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+
+/* низ */
+.scene-foot{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--edge-soft);z-index:8}
+.scene-foot i{display:block;height:100%;background:var(--acc);transform-origin:left;transform:scaleX(0)}
+.hint{position:absolute;right:18px;bottom:16px;z-index:9;display:flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.hint .mouse{width:17px;height:27px;border:1px solid var(--faint);border-radius:9px;position:relative}
+.hint .mouse i{position:absolute;left:50%;top:5px;width:3px;height:3px;border-radius:50%;background:var(--faint);margin-left:-1.5px;animation:wh 1.9s ease-in-out infinite}
+@keyframes wh{0%,100%{transform:translateY(0);opacity:.3}35%{transform:translateY(8px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.hint .mouse i{animation:none}}
+
+footer{padding:34px 0 60px;color:var(--faint);font-size:13px;font-family:var(--f-mono);line-height:1.7}
+footer b{color:var(--dim);font-weight:400}
+
+/* мобильный фолбэк */
+@media (max-width:1000px){
+  .rail{height:auto!important}
+  .pin{position:static;height:auto;padding:0}
+  .stage{height:auto;min-height:0;border-radius:14px}
+  .body{height:auto}
+  .work{overflow:visible}
+  .scene{position:static;opacity:1!important;transform:none!important;border-bottom:1px solid var(--edge-soft)}
+  .scene *{opacity:1!important;transform:none!important}
+  .map{-webkit-mask-image:none;mask-image:none}
+  .cell .idea{display:none}
+  .cell .pic{opacity:1!important}
+  .hint,.scene-foot{display:none}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <span class="tag">Услуга 2 из 7</span>
+    <h1>Дизайнер получает бриф<br>и отдаёт готовые <em>макеты</em></h1>
+    <p>Пример: запуск курса по AI-маркетингу. Аудиторию и оффер дизайнеру уже описали. Дальше он смотрит, что заходит в ленте у этих людей, расписывает кадры, снимает и собирает макеты. Крутите.</p>
+  </header>
+</div>
+
+<div class="wrap">
+<div class="rail" id="rail">
+  <div class="pin">
+    <div class="stage">
+
+      <div class="pipe">
+        <span class="brand"><i></i> AI-дизайн</span>
+        <span class="nodes" id="nodes"></span>
+        <span class="clock mono" id="clock">00:00</span>
+      </div>
+
+      <div class="body">
+        <div class="log">
+          <div class="log-head">Что делает агент</div>
+          <div class="log-tape" id="tape"></div>
+        </div>
+
+        <div class="work" id="work">
+
+          <!-- 1 -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 1 · Бриф</span>
+            <h2>Бриф уже на руках</h2>
+            <div class="brief-field"><span id="briefText"></span><span class="car"></span></div>
+            <div class="brief-chips">
+              <span class="chip" data-chip>курс по AI-маркетингу</span>
+              <span class="chip" data-chip>маркетологи и владельцы, 28–45</span>
+              <span class="chip" data-chip>Instagram и YouTube</span>
+              <span class="chip" data-chip>СНГ и Европа</span>
+            </div>
+          </section>
+
+          <!-- 2 -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 2 · Насмотренность</span>
+            <h2>Собирает то, что заходит у вашей аудитории</h2>
+            <p class="sub">Открывает ленту в странах показа, смотрит креативы, которые собирают просмотры прямо сейчас, и забирает из них приёмы для ваших макетов.</p>
+            <div class="trend-grid">
+              <div class="map-wrap">
+                <div class="map" id="map"></div>
+                <div class="map-cap">где эти люди листают ленту</div>
+              </div>
+              <div class="groups">
+                <div class="grp" data-grp><b>Текст на пол-экрана</b><span>нашёл в Reels</span><p><i>беру</i> фразу крупно</p></div>
+                <div class="grp" data-grp><b>Скриншот вместо фото</b><span>нашёл в Facebook</span><p><i>беру</i> экран в кадр</p></div>
+                <div class="grp" data-grp><b>Съёмка как с рук</b><span>нашёл в YouTube</span><p><i>беру</i> стол вместо студии</p></div>
+              </div>
+            </div>
+            <div class="counters">
+              <div class="counter"><b class="mono" data-c="240">0</b><span>креативов посмотрел</span></div>
+              <div class="counter"><b class="mono" data-c="6">0</b><span>стран показа</span></div>
+              <div class="counter"><b class="mono" data-c="12">0</b><span>приёмов сохранил</span></div>
+              <div class="counter"><b class="mono" data-c="3">0</b><span>взял в работу</span></div>
+            </div>
+          </section>
+
+          <!-- 3 -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 3 · Стиль</span>
+            <h2>Решает, как это будет выглядеть</h2>
+            <div class="vals">
+              <div class="val" data-val><span class="n">01</span><b>Фраза крупно</b><p>Одна мысль на макет. Остальное уходит в мелкий шрифт.</p></div>
+              <div class="val axis" data-val><span class="n">02 · основа</span><b>Тёмный фон, один акцент</b><p>Лента пёстрая, тёмный кадр в ней заметнее.</p></div>
+              <div class="val" data-val><span class="n">03</span><b>Рабочий фон</b><p>Стол, экран, наушники. Студийный свет выдаёт рекламу.</p></div>
+            </div>
+            <div class="axis-line" id="axisLine">
+              <span>Правило для всех макетов</span>
+              <b>Лицо, крупная фраза, один <em>акцент</em>.</b>
+            </div>
+          </section>
+
+          <!-- 4 -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 4 · Кадры</span>
+            <h2>Расписывает, что снимаем</h2>
+            <div class="idea-head"><span>кадр</span><span>под что</span></div>
+            <div class="ideas" id="ideas"></div>
+            <div class="spec" id="spec"></div>
+          </section>
+
+          <!-- 5 -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 5 · Съёмка</span>
+            <h2>Из одного фото получается съёмка</h2>
+            <div class="shoot">
+              <div>
+                <div class="lbl">Фото клиента</div>
+                <div class="slot portrait" id="srcSlot"><span class="ph">ваше фото<br>3:4</span></div>
+              </div>
+              <div>
+                <div class="lbl">Идеи становятся кадрами</div>
+                <div class="shots" id="shots"></div>
+              </div>
+            </div>
+            <div class="note">тот же человек, <b id="shotCount">0</b> кадров, разное место и свет</div>
+          </section>
+
+          <!-- 6 -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 6 · Сборка</span>
+            <h2>Собирает макет из кадра</h2>
+            <div class="design">
+              <div class="compose" id="compose">
+                <span class="ph">кадр из съёмки</span>
+                <span class="grid-ov" id="ovGrid"></span>
+                <span class="plate" id="ovPlate"></span>
+                <span class="copy" id="ovCopy">
+                  <b>Отдел маркетинга<br><em>за $20 в месяц</em></b>
+                  <span>курс по AI-маркетингу</span>
+                </span>
+              </div>
+              <div>
+                <div class="lbl">Три креатива под разные площадки</div>
+                <div class="formats">
+                  <div class="fmt" data-fmt>
+                    <div class="slot sq"><img src="assets/creative-1-feed-1x1.jpg" alt=""></div>
+                    <div class="cap">лента</div>
+                  </div>
+                  <div class="fmt" data-fmt>
+                    <div class="slot wide"><img src="assets/creative-2-youtube-16x9.jpg" alt=""></div>
+                    <div class="cap">обложка</div>
+                  </div>
+                  <div class="fmt" data-fmt>
+                    <div class="slot tall"><img src="assets/creative-3-stories-9x16.jpg" alt=""></div>
+                    <div class="cap">сторис</div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 7 -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 7 · Отдача</span>
+            <h2>Что вы забираете</h2>
+            <div class="total" id="total">
+              <b>от 10 до <em>100</em></b><span>дизайнов за 20 минут</span>
+            </div>
+            <div class="kit">
+              <div data-kit><b>Реклама в Instagram и Facebook</b><span>по несколько вариантов на тест</span></div>
+              <div data-kit><b>Обложки для YouTube</b><span>под видео и под шортсы</span></div>
+              <div data-kit><b>Обложки для Reels и TikTok</b><span>первый кадр, который держит</span></div>
+              <div data-kit><b>Баннеры для сайта</b><span>первый экран и блоки с оффером</span></div>
+              <div data-kit><b>Презентация клиенту</b><span>с именем того, кому отправляете</span></div>
+              <div data-kit><b>Оформление профиля</b><span>аватар, шапка, закреплённые</span></div>
+            </div>
+            <div class="price" id="price"><b>$250–$900</b><span>за всё, 2–3 дня. Набор собираем под то, где вы продаёте</span></div>
+          </section>
+
+        </div>
+      </div>
+
+      <div class="hint" id="hint"><span class="mouse"><i></i></span> крутите</div>
+      <div class="scene-foot"><i id="foot"></i></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="wrap">
+  <footer>
+    Съёмка и три креатива собраны из одного фото клиента.
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ═══ ФОТО: пустая строка = рамка-заглушка ═══ */
+  var PHOTOS = {
+    source: "assets/source.jpg",
+    shots:  ["assets/shot-1-laptop.jpg","assets/shot-2-stage.jpg","assets/shot-3-screen.jpg","assets/shot-4-window.jpg",
+             "assets/shot-5-portrait.jpg","assets/shot-6-notes.jpg","assets/shot-7-table.jpg","assets/shot-8-full.jpg"],
+    hero:   "assets/hero.jpg",
+    formats:[]
+  };
+
+  var clamp01 = function(v){ return v<0?0:v>1?1:v; };
+  function track(p, stops){
+    if (p <= stops[0][0]) return stops[0][1];
+    var last = stops[stops.length-1];
+    if (p >= last[0]) return last[1];
+    for (var i=1;i<stops.length;i++){
+      var a=stops[i-1], b=stops[i], sp=b[0]-a[0];
+      if (p <= b[0]) return a[1] + (b[1]-a[1]) * (sp ? (p-a[0])/sp : 0);
+    }
+    return last[1];
+  }
+
+  var rail = document.getElementById('rail');
+  if (!rail) return;
+
+  var N = 7;
+  var at = function(i, x){ return (i + x) / N; };
+  // всё внутри сцены заканчивается к 0.62 — дальше пауза до конца шага
+  function reveal(p, i, from, to){ return track(p, [[at(i,from),0],[at(i,to),1]]); }
+  function fade(el, v, shift){
+    el.style.opacity = v.toFixed(3);
+    if (shift) el.style.transform = 'translate3d(0,' + (shift*(1-v)).toFixed(2) + 'px,0)';
+  }
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var narrow = function(){ return innerWidth <= 1000; };
+  var scenes = [].slice.call(document.querySelectorAll('.scene'));
+  var nf = new Intl.NumberFormat('ru-RU');
+
+  /* конвейер */
+  var NODE_CAPS = ['бриф','лента','стиль','кадры','съёмка','сборка','отдача'];
+  var nodes = document.getElementById('nodes'), beads = [], wires = [];
+  NODE_CAPS.forEach(function(cap, i){
+    var w = document.createElement('span'); w.className = 'node-wrap';
+    var b = document.createElement('span'); b.className = 'bead'; w.appendChild(b); beads.push(b);
+    if (i < NODE_CAPS.length - 1){
+      var wire = document.createElement('span'); wire.className = 'wire';
+      var fill = document.createElement('i'); wire.appendChild(fill); w.appendChild(wire); wires.push(fill);
+    }
+    var c = document.createElement('span'); c.className = 'cap'; c.textContent = cap; w.appendChild(c);
+    nodes.appendChild(w);
+  });
+
+  /* лог */
+  var LOG = [
+    [at(0,0.15), 'открыл бриф'],
+    [at(0,0.45), 'аудитория уже описана'],
+    [at(1,0.10), 'смотрю ленту в этих странах'],
+    [at(1,0.35), 'собрал <b>12 форматов</b>'],
+    [at(1,0.55), 'три взял в работу'],
+    [at(2,0.12), 'выбираю стиль'],
+    [at(2,0.45), 'тёмный фон, один акцент'],
+    [at(3,0.12), 'расписываю кадры'],
+    [at(3,0.48), 'пишу задание для нейросети'],
+    [at(4,0.10), 'отдал в <b>съёмку</b>'],
+    [at(4,0.38), 'кадры приходят'],
+    [at(4,0.58), 'отобрал восемь'],
+    [at(5,0.10), 'сажусь за <b>макет</b>'],
+    [at(5,0.36), 'ставлю текст и сетку'],
+    [at(5,0.55), 'раскладываю по форматам'],
+    [at(6,0.18), 'готово']
+  ];
+  var tape = document.getElementById('tape');
+  var logEls = LOG.map(function(row){
+    var el = document.createElement('div'); el.className = 'log-line'; el.innerHTML = row[1];
+    tape.appendChild(el); return el;
+  });
+  var LOG_CAP = 11, LOG_H = 24;
+
+  /* 1 · задача */
+  var BRIEF = 'Курс по AI-маркетингу. Аудитория и оффер уже описаны';
+  var briefText = document.getElementById('briefText');
+  var chips = [].slice.call(document.querySelectorAll('[data-chip]'));
+
+  /* 2 · карта */
+  var MAP = [
+    "...........#########...######...................................",
+    "...........##########...##......................................",
+    "............########....###.....................................",
+    "....#...........###......##.....................................",
+    "...###........#.###....####.....................................",
+    "....##.......#####.....######...................................",
+    "..##.##.......#.#..###..######........................####......",
+    ".##.####...####################....................############.",
+    ".##.#####..#####################..................#############.",
+    "....####.########################.........####.##..#############",
+    "........###########################......#######################",
+    ".....###############################.....#######################",
+    "......#############################.......######################",
+    ".......######################.##.............###################",
+    ".......#########.############...............####################",
+    ".......######..##..#########................####################",
+    ".#########.....###..#######..........#.......###################",
+    ".#########......###..#######..###....####.....#################.",
+    ".#######......#...#######.#################..###############....",
+    ".#######......#....#..##..###############....###############....",
+    "..#####...........#....##.#############.......#.#########.##....",
+    ".#.###.................#...#########..............###...........",
+    "...................................................#............",
+    "................................................................"
+  ];
+  var LON0=-11, LON1=80, LAT0=34, LAT1=62;
+  var CITIES = [
+    { n:'Алматы',  lat:43.24, lon:76.95, label:1 },
+    { n:'Ташкент', lat:41.30, lon:69.24, label:1 },
+    { n:'Астана',  lat:51.13, lon:71.43, label:0 },
+    { n:'Тбилиси', lat:41.72, lon:44.79, label:0 },
+    { n:'Баку',    lat:40.41, lon:49.87, label:0 },
+    { n:'Киев',    lat:50.45, lon:30.52, label:1 },
+    { n:'Варшава', lat:52.23, lon:21.01, label:0 },
+    { n:'Берлин',  lat:52.52, lon:13.40, label:1 },
+    { n:'Мадрид',  lat:40.42, lon:-3.70, label:0 },
+    { n:'Лимасол', lat:34.68, lon:33.04, label:0 }
+  ];
+  var map = document.getElementById('map');
+  var COLS = MAP[0].length, ROWS = MAP.length;
+  (function drawLand(){
+    var frag = document.createDocumentFragment();
+    for (var r = 0; r < ROWS; r++){
+      for (var c = 0; c < COLS; c++){
+        if (MAP[r][c] !== '#') continue;
+        var d = document.createElement('span');
+        d.className = 'land';
+        d.style.left = ((c + 0.5) / COLS * 100) + '%';
+        d.style.top  = ((r + 0.5) / ROWS * 100) + '%';
+        d.style.width = 'calc(100% / ' + COLS + ' * 0.62)';
+        d.style.aspectRatio = '1';
+        frag.appendChild(d);
+      }
+    }
+    map.appendChild(frag);
+  })();
+  var cityEls = CITIES.map(function(ct){
+    var el = document.createElement('span');
+    el.className = 'city';
+    el.style.left = ((ct.lon - LON0) / (LON1 - LON0) * 100) + '%';
+    el.style.top  = ((LAT1 - ct.lat) / (LAT1 - LAT0) * 100) + '%';
+    var x = (ct.lon - LON0) / (LON1 - LON0);
+    if (x > 0.7) el.className += ' flip';          // подпись слева, чтобы не уехала за край
+    el.innerHTML = '<i></i>' + (ct.label ? '<span>' + ct.n + '</span>' : '');
+    map.appendChild(el);
+    return el;
+  });
+  var grps = [].slice.call(document.querySelectorAll('[data-grp]'));
+
+  /* 3 */
+  var vals = [].slice.call(document.querySelectorAll('[data-val]'));
+  var axisLine = document.getElementById('axisLine');
+
+  /* 4 · идеи */
+  var IDEAS = [
+    ['За ноутбуком, экран в кадре', 'баннер с заголовком сверху'],
+    ['На сцене, зал размыт', 'обложка для YouTube'],
+    ['Портрет крупно, тёмный фон', 'сторис с текстом'],
+    ['У окна с телефоном', 'карусель в Instagram']
+  ];
+  var ideasBox = document.getElementById('ideas');
+  var ideaEls = IDEAS.map(function(row){
+    var el = document.createElement('div');
+    el.className = 'idea-row';
+    el.innerHTML = '<span class="say">' + row[0] + '</span><span class="shot">' + row[1] + '</span>';
+    ideasBox.appendChild(el);
+    return el;
+  });
+  var SPEC = 'задание для нейросети: мужчина 30–40, деловой кэжуал, '
+           + '<k>мягкий дневной свет</k>, взгляд в камеру, без улыбки, '
+           + '<k>кадр 3:4</k>, фон рабочий, студийный свет не ставим';
+  var spec = document.getElementById('spec');
+  spec.innerHTML = SPEC;
+
+  /* 5 · съёмка */
+  var SHOT_IDEAS = ['за ноутбуком','на сцене','экран в кадре','у окна',
+                    'портрет крупно','с блокнотом','за столом','вертикаль'];
+  var shots = document.getElementById('shots');
+  var cells = SHOT_IDEAS.map(function(txt, i){
+    var el = document.createElement('div');
+    el.className = 'cell';
+    el.innerHTML = '<span class="idea">' + txt + '</span><span class="pic">'
+      + (PHOTOS.shots[i] ? '<img src="' + PHOTOS.shots[i] + '" alt="">' : '<span class="ph">кадр ' + (i+1) + '</span>')
+      + '</span>';
+    shots.appendChild(el);
+    return { box: el, idea: el.querySelector('.idea'), pic: el.querySelector('.pic') };
+  });
+  var shotCount = document.getElementById('shotCount');
+  var srcSlot = document.getElementById('srcSlot');
+  if (PHOTOS.source) srcSlot.innerHTML = '<img src="' + PHOTOS.source + '" alt="">';
+
+  /* 6 */
+  var compose = document.getElementById('compose');
+  if (PHOTOS.hero){
+    var im = document.createElement('img'); im.src = PHOTOS.hero; im.alt = '';
+    compose.insertBefore(im, compose.firstChild);
+    var phh = compose.querySelector('.ph'); if (phh) phh.style.display = 'none';
+  }
+  var ovGrid = document.getElementById('ovGrid');
+  var ovPlate = document.getElementById('ovPlate');
+  var ovCopy = document.getElementById('ovCopy');
+  var fmts = [].slice.call(document.querySelectorAll('[data-fmt]'));
+
+
+  /* 7 */
+  var total = document.getElementById('total');
+  var kits = [].slice.call(document.querySelectorAll('[data-kit]'));
+  var price = document.getElementById('price');
+  var counters = [].slice.call(document.querySelectorAll('[data-c]'));
+
+  var foot = document.getElementById('foot');
+  var hint = document.getElementById('hint');
+  var clock = document.getElementById('clock');
+
+  function render(p){
+    /* конвейер */
+    for (var i = 0; i < N; i++){
+      var lit = clamp01(p * N - i + 0.12);
+      beads[i].style.background = lit > 0.5 ? 'var(--acc)' : 'var(--edge)';
+      beads[i].style.boxShadow = (lit > 0.5 && lit < 1) ? '0 0 0 5px var(--acc-glow)' : '0 0 0 0 var(--acc-glow)';
+      if (wires[i]) wires[i].style.transform = 'scaleX(' + clamp01(p*N - i).toFixed(3) + ')';
+    }
+    clock.textContent = '00:' + ('0' + Math.floor(p * 214 / 4)).slice(-2);
+
+    /* сцены: следующая начинает проявляться в самом конце предыдущей */
+    for (var s = 0; s < N; s++){
+      var op = s === 0 ? 1 : track(p, [[at(s,-0.04),0],[at(s,0.06),1]]);
+      scenes[s].style.opacity = op.toFixed(3);
+      scenes[s].style.pointerEvents = op > 0.5 ? 'auto' : 'none';
+    }
+
+    /* лог */
+    var shown = 0;
+    for (var L = 0; L < LOG.length; L++){
+      var o = track(p, [[LOG[L][0], 0], [LOG[L][0] + 0.010, 1]]);
+      logEls[L].style.opacity = o.toFixed(3);
+      logEls[L].style.transform = 'translate3d(0,' + (6*(1-o)).toFixed(1) + 'px,0)';
+      if (o > 0.99) logEls[L].classList.add('done'); else logEls[L].classList.remove('done');
+      if (o > 0.2) shown++;
+    }
+    tape.style.transform = 'translate3d(0,' + (-Math.max(0, shown - LOG_CAP) * LOG_H) + 'px,0)';
+
+    /* 1 · задача */
+    var tp = reveal(p, 0, 0.04, 0.42);
+    briefText.textContent = BRIEF.slice(0, Math.round(BRIEF.length * tp));
+    chips.forEach(function(c, i){ fade(c, reveal(p, 0, 0.44 + i*0.04, 0.54 + i*0.04), 8); });
+
+    /* 2 · карта */
+    map.style.setProperty('--rv', (reveal(p, 1, 0.04, 0.34) * 112).toFixed(1) + '%');
+    cityEls.forEach(function(c, i){
+      var o = reveal(p, 1, 0.20 + i*0.018, 0.30 + i*0.018);
+      c.style.opacity = o.toFixed(3);
+      c.style.transform = 'translate(-50%,-50%) scale(' + (0.6 + 0.4*o).toFixed(3) + ')';
+    });
+    grps.forEach(function(g, i){ fade(g, reveal(p, 1, 0.38 + i*0.05, 0.50 + i*0.05), 12); });
+
+    /* 3 · смыслы */
+    vals.forEach(function(v, i){ fade(v, reveal(p, 2, 0.06 + i*0.07, 0.24 + i*0.07), 14); });
+    fade(axisLine, reveal(p, 2, 0.40, 0.56), 10);
+
+    /* 4 · идеи */
+    ideaEls.forEach(function(el, i){ fade(el, reveal(p, 3, 0.06 + i*0.08, 0.22 + i*0.08), 10); });
+    fade(spec, reveal(p, 3, 0.44, 0.60), 10);
+
+    /* 5 · съёмка: рамка → идея → готовый кадр */
+    var ready = 0;
+    cells.forEach(function(c, i){
+      var box  = reveal(p, 4, 0.10 + i*0.020, 0.18 + i*0.020);
+      var idea = reveal(p, 4, 0.14 + i*0.022, 0.24 + i*0.022);
+      var pic  = reveal(p, 4, 0.34 + i*0.030, 0.46 + i*0.030);
+      c.box.style.opacity = box.toFixed(3);
+      c.box.style.transform = 'scale(' + (0.94 + 0.06*box).toFixed(3) + ')';
+      c.idea.style.opacity = (idea * (1 - pic)).toFixed(3);
+      c.pic.style.opacity = pic.toFixed(3);
+      if (pic > 0.6) ready++;
+    });
+    shotCount.textContent = ready;
+
+    /* 6 · дизайнер */
+    ovGrid.style.opacity  = (reveal(p,5,0.08,0.20) * (1 - reveal(p,5,0.32,0.42))).toFixed(3);
+    ovPlate.style.opacity = reveal(p,5,0.24,0.38).toFixed(3);
+    fade(ovCopy, reveal(p,5,0.34,0.48), 12);
+    fmts.forEach(function(f, i){ fade(f, reveal(p, 5, 0.44 + i*0.06, 0.56 + i*0.06), 14); });
+
+    /* 7 · итог */
+    fade(total, reveal(p, 6, 0.04, 0.20), 12);
+    kits.forEach(function(k, i){ fade(k, reveal(p, 6, 0.14 + i*0.045, 0.28 + i*0.045), 12); });
+    fade(price, reveal(p, 6, 0.46, 0.60), 10);
+
+    /* счётчики */
+    counters.forEach(function(c){
+      var idx = scenes.indexOf(c.closest('.scene'));
+      c.textContent = nf.format(Math.round(+c.dataset.c * reveal(p, idx, 0.30, 0.58)));
+    });
+
+    foot.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+    hint.style.opacity = (1 - clamp01(p * 12)).toFixed(3);
+  }
+
+  function tick(){
+    var range = rail.offsetHeight - innerHeight;
+    render(clamp01(-rail.getBoundingClientRect().top / (range || 1)));
+  }
+  var queued = false;
+  function onScroll(){
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function(){ tick(); queued = false; });
+  }
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState !== 'visible') return;
+    queued = false; tick();
+  });
+
+  function flatten(){
+    rail.style.height = 'auto';
+    render(1);
+    scenes.forEach(function(s){ s.style.opacity = '1'; });
+    tape.style.transform = 'none';
+    logEls.forEach(function(l){ l.style.opacity = '1'; l.style.transform = 'none'; });
+    briefText.textContent = BRIEF;
+    map.style.setProperty('--rv','112%');
+    cityEls.forEach(function(c){ c.style.opacity = '1'; c.style.transform = 'translate(-50%,-50%)'; });
+    cells.forEach(function(c){ c.idea.style.opacity = '0'; c.pic.style.opacity = '1'; c.box.style.opacity = '1'; });
+    shotCount.textContent = cells.length;
+    counters.forEach(function(c){ c.textContent = nf.format(+c.dataset.c); });
+  }
+
+  function boot(){
+    if (reduce || narrow()){ flatten(); return; }
+    rail.style.height = '';
+    addEventListener('scroll', onScroll, { passive:true });
+    tick();
+  }
+  addEventListener('resize', function(){ removeEventListener('scroll', onScroll); boot(); }, { passive:true });
+  boot();
+})();
+</script>
+
+</body></html>

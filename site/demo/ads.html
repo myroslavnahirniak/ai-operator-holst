@@ -1,0 +1,698 @@
+<!doctype html><html><head><!-- /frame-runtime --><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style id="deck-accent">:root{--acc-rgb:253,213,6!important;--acc-dim:#7a6300!important;--acc-ink:#0b0907!important;--bg:#0b0907!important;--bg-2:#110d0a!important;--panel:#15110d!important;--edge:#2a2420!important;--edge-soft:#1c1713!important}html{scrollbar-width:thin;scrollbar-color:#3a3129 transparent}</style></head><body>
+<title>Реклама в Instagram</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+:root{
+  --bg:#080B0A; --bg-2:#0D1211; --panel:#121817; --edge:#1F2A27; --edge-soft:#18211F;
+  --text:#F2F6F4; --dim:#8C9B96; --faint:#5C6B66;
+  --acc:#FDD506; --acc-dim:#7a6300; --acc-glow:rgba(253,213,6,.14);
+  --warn:#E8B44A; --bad:#E2604F;
+  --f-ui:"Manrope","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f-ui);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+@media (max-width:700px){.wrap{padding:0 16px}}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* шапка */
+.top{position:relative;padding:54px 0 34px;background:radial-gradient(900px 380px at 50% -140px, var(--acc-glow), transparent 70%)}
+.tag{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--acc-dim);border-radius:999px;padding:6px 16px;font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;color:var(--acc);text-transform:uppercase}
+.top h1{font-size:clamp(30px,4.6vw,54px);font-weight:800;letter-spacing:-.03em;margin:18px 0 12px;line-height:1.03;text-wrap:balance}
+.top h1 em{font-style:normal;color:var(--acc)}
+.top p{margin:0;color:var(--dim);max-width:62ch;font-size:clamp(15px,1.5vw,18px)}
+
+/* рельса */
+.rail{height:800vh}
+.pin{position:sticky;top:0;height:100svh;display:flex;align-items:center;padding:14px 0 22px}
+.stage{position:relative;width:100%;height:min(830px,calc(100svh - 40px));min-height:560px;background:var(--bg-2);border:1px solid var(--edge);border-radius:20px;overflow:hidden;box-shadow:0 40px 90px -60px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.03)}
+
+/* конвейер */
+.pipe{height:62px;flex-shrink:0;border-bottom:1px solid var(--edge-soft);display:flex;align-items:center;gap:18px;padding:0 20px;background:var(--panel)}
+.pipe .brand{font-size:13px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.pipe .brand i{width:8px;height:8px;border-radius:50%;background:var(--acc);display:block}
+.nodes{display:flex;align-items:center;flex:1;min-width:0}
+.node-wrap{position:relative;display:flex;align-items:center;flex:1;min-width:0}
+.node-wrap:last-child{flex:0 0 auto}
+.bead{width:9px;height:9px;border-radius:50%;background:var(--edge);flex-shrink:0;box-shadow:0 0 0 0 var(--acc-glow)}
+.wire{height:1px;background:var(--edge);flex:1;position:relative;overflow:hidden}
+.wire i{position:absolute;inset:0;background:var(--acc);transform-origin:left;transform:scaleX(0)}
+.node-wrap .cap{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);position:absolute;white-space:nowrap;left:0;top:12px}
+@media (max-width:900px){.node-wrap .cap{display:none}}
+.pipe .clock{font-family:var(--f-mono);font-size:11px;color:var(--faint);white-space:nowrap}
+
+/* тело и лог */
+.body{display:grid;grid-template-columns:296px minmax(0,1fr);height:calc(100% - 62px)}
+@media (max-width:1000px){.body{grid-template-columns:1fr}}
+.log{border-right:1px solid var(--edge-soft);background:var(--panel);position:relative;overflow:hidden;padding:18px 0;display:flex;flex-direction:column}
+@media (max-width:1000px){.log{display:none}}
+.log-head{flex-shrink:0;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);padding:0 18px 12px}
+.log-clip{flex:1;min-height:0;overflow:hidden;position:relative}
+.log-tape{padding:0 18px;will-change:transform}
+.log-line{font-family:var(--f-mono);font-size:11.5px;line-height:1.5;color:var(--dim);padding:5px 0 5px 14px;position:relative;opacity:0}
+.log-line::before{content:"";position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:var(--acc-dim)}
+.log-line b{color:var(--acc);font-weight:500}
+.log-line.done::before{background:var(--acc)}
+
+/* сцены */
+.work{position:relative;overflow:hidden;background:var(--bg-2)}
+.scene{position:absolute;inset:0;background:var(--bg-2);opacity:0;display:flex;flex-direction:column;justify-content:center;gap:clamp(12px,2.2vh,20px);padding:clamp(24px,3.6vh,38px) 42px}
+@media (max-width:700px){.scene{padding:26px 20px}}
+.scene-kicker{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--acc)}
+.scene h2{font-size:clamp(20px,2.4vw,30px);font-weight:800;letter-spacing:-.025em;margin:0;line-height:1.12;text-wrap:balance}
+.scene .sub{margin:-8px 0 0;color:var(--dim);font-size:13.5px;max-width:78ch;line-height:1.45}
+.lbl{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:9px}
+
+/* 1 · хук */
+.hook-wrap{display:flex;flex-direction:column;justify-content:center;flex:1;min-height:0;gap:clamp(18px,3vh,34px)}
+.hook-line{font-size:clamp(26px,4vw,52px);font-weight:800;letter-spacing:-.035em;line-height:1.04;margin:0;max-width:22ch}
+.hook-line .w{opacity:0;display:inline-block}
+.hook-line .w em{font-style:normal;color:var(--acc)}
+.nots{display:flex;gap:clamp(16px,3.4vw,46px);flex-wrap:wrap}
+.not{opacity:0;max-width:22ch}
+.not b{display:block;font-family:var(--f-mono);font-size:clamp(20px,2.6vw,32px);letter-spacing:-.02em;color:var(--acc);font-weight:500}
+.not span{display:block;font-size:clamp(14px,1.5vw,17px);color:var(--text);margin-top:6px;line-height:1.4;font-weight:500}
+
+/* 2 · разбор бизнеса */
+.quiz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,0.92fr);gap:clamp(20px,3vw,40px);align-items:center;flex:1;min-height:0}
+@media (max-width:900px){.quiz{grid-template-columns:1fr}}
+.qlist{display:flex;flex-direction:column;gap:7px}
+.q{display:flex;align-items:center;gap:11px;border:1px solid var(--edge);background:var(--panel);border-radius:11px;padding:8px 13px;opacity:0}
+.q i{width:22px;height:22px;flex-shrink:0;border-radius:7px;border:1px solid var(--edge);color:var(--faint);
+  font-family:var(--f-mono);font-size:10.5px;display:flex;align-items:center;justify-content:center;font-style:normal}
+.q b{font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.q em{margin-left:auto;font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--faint);flex-shrink:0}
+.q.ok{border-color:var(--acc-dim);background:linear-gradient(90deg,rgba(253,213,6,.08),transparent 72%)}
+.q.ok i{border-color:var(--acc-dim);background:rgba(253,213,6,.16);color:var(--acc)}
+.q.ok em{color:var(--acc)}
+.q.ok em::after{content:" ✓"}
+
+.brief{border:1px solid var(--acc-dim);border-radius:16px;background:linear-gradient(180deg,rgba(253,213,6,.07),transparent 60%);padding:16px 17px;opacity:0}
+.brief-h{display:flex;align-items:center;gap:9px;padding-bottom:12px;border-bottom:1px solid var(--edge);margin-bottom:12px}
+.brief-h svg{width:20px;height:20px;color:var(--acc);flex-shrink:0}
+.brief-h span{font-size:14px;font-weight:800;letter-spacing:-.015em}
+.brief-h b{margin-left:auto;font-family:var(--f-mono);font-size:11px;color:var(--acc);font-weight:500}
+.bf{display:flex;align-items:baseline;gap:10px;padding:6px 0;opacity:0}
+.bf+.bf{border-top:1px solid var(--edge-soft)}
+.bf span{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);width:112px;flex-shrink:0}
+.bf u{position:relative;flex:1;text-decoration:none;font-size:12.5px;color:var(--text);line-height:1.35;clip-path:inset(0 100% 0 0)}
+.brief-f{margin-top:12px;padding-top:11px;border-top:1px solid var(--edge);display:flex;align-items:center;gap:9px;opacity:0}
+.brief-f i{width:18px;height:18px;border-radius:50%;background:var(--acc);color:#08110C;display:flex;align-items:center;justify-content:center;font-size:11px;font-style:normal;flex-shrink:0}
+.brief-f b{font-size:12.5px;font-weight:700}
+@media (max-height:780px){
+  .q{padding:6px 12px}
+  .qlist{gap:6px}
+  .brief{padding:13px 15px}
+  .brief-h{padding-bottom:9px;margin-bottom:9px}
+  .bf{padding:5px 0}
+  .brief-f{margin-top:9px;padding-top:9px}
+}
+
+/* 3 · кабинет */
+.cab{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,0.88fr);gap:clamp(20px,3vw,42px);align-items:center;flex:1;min-height:0}
+@media (max-width:900px){.cab{grid-template-columns:1fr}}
+.tree{position:relative;display:flex;flex-direction:column;gap:6px}
+.tn{position:relative;display:flex;align-items:center;gap:10px;border:1px solid var(--edge);background:var(--panel);
+  border-radius:10px;padding:8px 12px;opacity:0}
+.tn i.d{width:7px;height:7px;border-radius:50%;background:var(--acc-dim);flex-shrink:0}
+.tn b{font-size:13px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tn span{font-size:11.5px;color:var(--dim);margin-left:auto;flex-shrink:0;font-family:var(--f-mono)}
+.tn.l1{margin-left:0;border-color:var(--acc-dim);background:linear-gradient(90deg,rgba(253,213,6,.10),transparent 70%)}
+.tn.l1 i.d{background:var(--acc)}
+.tn.l2{margin-left:26px}
+.tn.l3{margin-left:52px;padding:6px 12px}
+.tn.l3 b{font-size:12px;font-weight:500;color:var(--dim)}
+.tn.l2::before,.tn.l3::before{content:"";position:absolute;left:-14px;top:50%;width:13px;height:1px;background:var(--edge)}
+.tn.l3::before{left:-13px}
+
+/* 4 · запуск */
+.launch{display:flex;flex-direction:column;gap:clamp(14px,2.4vh,24px);flex:1;min-height:0;justify-content:center}
+.tgs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.tgs{grid-template-columns:1fr}}
+.tg{border:1px solid var(--edge);background:var(--panel);border-radius:13px;padding:14px 15px;opacity:0}
+.tg .sw{width:44px;height:24px;border-radius:999px;border:1px solid var(--edge);background:#0B100F;position:relative;margin-bottom:11px}
+.tg .sw u{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--faint);display:block}
+.tg.on .sw{border-color:var(--acc-dim);background:rgba(253,213,6,.18)}
+.tg.on .sw u{left:22px;background:var(--acc)}
+.tg b{display:block;font-size:14px;font-weight:800;letter-spacing:-.015em}
+.tg span{display:block;font-size:12px;color:var(--dim);margin-top:3px}
+.tg.on span{color:var(--acc)}
+.bwrap{border:1px solid var(--edge);border-radius:14px;background:var(--panel);padding:15px 16px}
+.bbar{height:16px;border-radius:8px;background:#0B100F;border:1px solid var(--edge-soft);display:flex;overflow:hidden;gap:2px;padding:2px}
+.bbar i{display:block;border-radius:6px;background:var(--acc);transform-origin:left;transform:scaleX(0);flex:0 0 auto;height:100%}
+.bbar i:nth-child(2){background:rgba(253,213,6,.62)}
+.bbar i:nth-child(3){background:rgba(253,213,6,.34)}
+.bleg{display:flex;gap:clamp(12px,2.4vw,28px);flex-wrap:wrap;margin-top:11px}
+.bleg span{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--dim);opacity:0}
+.bleg span u{width:9px;height:9px;border-radius:3px;background:var(--acc);display:block;flex-shrink:0}
+.bleg span:nth-child(2) u{background:rgba(253,213,6,.62)}
+.bleg span:nth-child(3) u{background:rgba(253,213,6,.34)}
+
+/* 5 · результативность */
+.perf{display:flex;flex-direction:column;gap:clamp(13px,2.2vh,22px);flex:1;min-height:0;justify-content:center}
+.gauge{opacity:0}
+.gtrack{position:relative;height:12px;border-radius:7px;overflow:hidden;
+  background:linear-gradient(90deg,var(--bad) 0%,var(--warn) 38%,#5C6B66 52%,rgba(253,213,6,.7) 74%,var(--acc) 100%)}
+.gneedle{position:absolute;top:-6px;width:3px;height:24px;border-radius:2px;background:var(--text);box-shadow:0 0 14px rgba(242,246,244,.55);left:0}
+.gwrap{position:relative;padding:8px 0 2px}
+.gleg{display:flex;justify-content:space-between;margin-top:9px;font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.grows{display:flex;flex-direction:column;gap:7px}
+.gr{display:flex;align-items:center;gap:12px;border:1px solid var(--edge);background:var(--panel);border-radius:11px;padding:10px 14px;opacity:0}
+.gr b{font-size:13.5px;font-weight:700;letter-spacing:-.01em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gr .st{font-family:var(--f-mono);font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--edge);color:var(--dim);flex-shrink:0}
+.gr em{font-style:normal;font-size:12.5px;font-weight:700;width:142px;text-align:right;flex-shrink:0}
+.gr.v1{border-color:var(--acc-dim)} .gr.v1 .st{color:var(--acc);border-color:var(--acc-dim);background:rgba(253,213,6,.1)} .gr.v1 em{color:var(--acc)}
+.gr.v2 .st{color:var(--dim)} .gr.v2 em{color:var(--dim)}
+.gr.v3 .st{color:var(--warn);border-color:rgba(232,180,74,.4);background:rgba(232,180,74,.09)} .gr.v3 em{color:var(--warn)}
+.gr.v4 .st{color:var(--bad);border-color:rgba(226,96,79,.4);background:rgba(226,96,79,.09)} .gr.v4 em{color:var(--bad)}
+.gr.now{box-shadow:0 0 0 1px var(--acc-dim), 0 0 28px -12px var(--acc)}
+@media (max-width:760px){.gr em{width:auto}}
+
+/* 6 · пожиратель */
+.eater{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:clamp(20px,3vw,40px);align-items:center;flex:1;min-height:0}
+@media (max-width:900px){.eater{grid-template-columns:1fr}}
+.ads{display:flex;flex-direction:column;gap:9px}
+.ad{border:1px solid var(--edge);background:var(--panel);border-radius:12px;padding:11px 14px;opacity:0}
+.ad-h{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.ad-h b{font-size:13px;font-weight:700;letter-spacing:-.01em}
+.ad-h em{margin-left:auto;font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--dim);flex-shrink:0}
+.ad .bar{display:block;height:9px;border-radius:5px;background:#0B100F;border:1px solid var(--edge-soft);overflow:hidden}
+.ad .bar u{display:block;height:100%;background:var(--acc);transform-origin:left;transform:scaleX(0)}
+.ad.eat .bar u{background:var(--bad)}
+.ad.eat em{color:var(--bad)}
+.ad.off{border-color:var(--edge-soft);background:transparent}
+.ad.off .ad-h b{color:var(--faint);text-decoration:line-through}
+.ad.off em{color:var(--faint)}
+.rules{display:flex;flex-direction:column;gap:8px}
+.rl{display:flex;align-items:center;gap:10px;border:1px solid var(--edge);background:var(--panel);border-radius:11px;padding:9px 13px;opacity:0}
+.rl i{width:30px;height:30px;flex-shrink:0;border-radius:9px;border:1px solid var(--acc-dim);background:rgba(253,213,6,.09);color:var(--acc);display:flex;align-items:center;justify-content:center}
+.rl i svg{width:16px;height:16px;display:block}
+.rl b{font-size:12.5px;font-weight:700;letter-spacing:-.005em;line-height:1.3}
+
+/* 7 · дашборд */
+.dash{display:flex;flex-direction:column;gap:clamp(12px,2vh,18px);flex:1;min-height:0;justify-content:center}
+.brw{border:1px solid var(--edge);border-radius:14px;overflow:hidden;background:#0A0F0E;opacity:0;margin:0 auto;width:100%;
+  max-width:min(100%,880px)}
+.brw-bar{height:30px;background:var(--panel);border-bottom:1px solid var(--edge-soft);display:flex;align-items:center;gap:6px;padding:0 12px}
+.brw-bar u{width:8px;height:8px;border-radius:50%;background:var(--edge);display:block}
+.brw-bar span{margin-left:10px;font-family:var(--f-mono);font-size:10px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brw-view{position:relative;overflow:hidden;aspect-ratio:1560/923;background:#F4F5FA}
+.brw-view img{position:absolute;left:0;top:0;width:100%;display:block}
+.dnotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.8vw,20px)}
+@media (max-width:760px){.dnotes{grid-template-columns:1fr}}
+.nt{display:flex;gap:11px;align-items:flex-start;opacity:0}
+.nt .pn{flex-shrink:0;width:clamp(34px,3.2vw,42px);height:clamp(34px,3.2vw,42px);border-radius:11px;border:1px solid var(--acc-dim);
+  background:rgba(253,213,6,.09);color:var(--acc);display:flex;align-items:center;justify-content:center}
+.nt .pn svg{width:clamp(18px,1.8vw,22px);height:clamp(18px,1.8vw,22px);display:block}
+.nt b{display:block;font-size:clamp(13.5px,1.4vw,16px);font-weight:800;letter-spacing:-.015em;line-height:1.2}
+.nt span{display:block;font-size:clamp(12px,1.15vw,13px);color:var(--dim);line-height:1.4;margin-top:3px}
+
+/* 8 · итог */
+.fin{display:flex;align-items:baseline;gap:clamp(14px,2.6vw,32px);flex-wrap:wrap;opacity:0}
+.fin .big{font-family:var(--f-mono);font-size:clamp(30px,4.6vw,58px);font-weight:500;letter-spacing:-.035em;color:var(--acc);line-height:1}
+.fin .cap{font-size:clamp(13px,1.4vw,16px);color:var(--dim);max-width:34ch}
+.kits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.6vw,16px)}
+@media (max-width:900px){.kits{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.kits{grid-template-columns:1fr}}
+.kit{border:1px solid var(--edge);background:var(--panel);border-radius:14px;padding:14px 15px;opacity:0}
+.kit .kico{display:block;width:clamp(34px,3.4vw,44px);height:clamp(34px,3.4vw,44px);color:var(--acc);margin-bottom:10px}
+.kit .kico svg{width:100%;height:100%;display:block}
+.kit b{display:block;font-size:14px;font-weight:800;letter-spacing:-.015em;margin-bottom:4px}
+.kit p{margin:0;font-size:12.5px;color:var(--dim);line-height:1.4}
+.price{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;opacity:0}
+.price b{font-family:var(--f-mono);font-size:clamp(22px,3vw,36px);font-weight:500;letter-spacing:-.03em;color:var(--acc)}
+.price span{font-size:13.5px;color:var(--dim)}
+
+/* прогресс */
+.foot-bar{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--acc);transform-origin:left;transform:scaleX(0)}
+
+footer{padding:34px 0 60px;color:var(--faint);font-size:13px;font-family:var(--f-mono);line-height:1.7}
+
+/* мобильный фолбэк */
+@media (max-width:1000px){
+  .rail{height:auto!important}
+  .pin{position:static;height:auto;padding:0}
+  .stage{height:auto;min-height:0;border-radius:14px}
+  .body{height:auto}
+  .work{overflow:visible}
+  .scene{position:static;opacity:1!important;transform:none!important;border-bottom:1px solid var(--edge-soft)}
+  .scene *{opacity:1!important;transform:none!important}
+  .bf u::after{display:none}
+  .bbar i{transform:none!important;flex:1}
+  .ad .bar u{transform:scaleX(.7)!important}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <span class="tag">Услуга 6 из 7</span>
+    <h1>Реклама в Instagram, которая <em>настраивает себя сама</em></h1>
+    <p>Агент разбирает бизнес, собирает кабинет, запускает и каждый день двигает бюджет туда, где заявки дешевле. Протестирован на 2 000 000 долларов бюджета. Крутите.</p>
+  </header>
+</div>
+
+<div class="wrap">
+<div class="rail" id="rail">
+  <div class="pin">
+    <div class="stage">
+
+      <div class="pipe">
+        <span class="brand"><i></i> Реклама в Instagram</span>
+        <span class="nodes" id="nodes"></span>
+        <span class="clock mono" id="clock">день 01</span>
+      </div>
+
+      <div class="body">
+        <div class="log">
+          <div class="log-head">Что делает агент</div>
+          <div class="log-clip"><div class="log-tape" id="tape"></div></div>
+        </div>
+
+        <div class="work">
+
+          <!-- 1 · хук -->
+          <section class="scene">
+            <div class="hook-wrap">
+              <p class="hook-line" id="hook"></p>
+              <div class="nots">
+                <div class="not" data-not><b id="cntBudget">$0</b><span>бюджета прошло через него на тестах</span></div>
+                <div class="not" data-not><b>24/7</b><span>смотрит цифры без выходных и отпусков</span></div>
+                <div class="not" data-not><b>0 часов</b><span>вашего времени на настройку кабинета</span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2 · разбор бизнеса -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 1 · Разбор</span>
+            <h2>Сначала расспрашивает про бизнес</h2>
+            <p class="sub">Двадцать вопросов — и агент знает, что вы продаёте, кому, где и сколько готовы платить за заявку. Дальше он работает по брифу, а не по догадкам.</p>
+            <div class="quiz">
+              <div class="qlist">
+                <div class="q" data-q><i>1</i><b>Что продаёте</b><em>ответ</em></div>
+                <div class="q" data-q><i>2</i><b>В каком регионе работаете</b><em>ответ</em></div>
+                <div class="q" data-q><i>3</i><b>Кому продаёте</b><em>ответ</em></div>
+                <div class="q" data-q><i>4</i><b>Какие боли закрываете</b><em>ответ</em></div>
+                <div class="q" data-q><i>5</i><b>Чем вы лучше других</b><em>ответ</em></div>
+                <div class="q" data-q><i>6</i><b>Сколько платите за заявку</b><em>ответ</em></div>
+              </div>
+              <div class="brief" id="brief">
+                <div class="brief-h">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
+                  <span>Бриф по вашему бизнесу</span><b id="qCount">0 / 6</b>
+                </div>
+                <div class="bf" data-bf><span>Направления</span><u>каждое идёт отдельной кампанией</u></div>
+                <div class="bf" data-bf><span>Цена заявки</span><u>своя цель для каждого направления</u></div>
+                <div class="bf" data-bf><span>Бюджет</span><u>общий на день и по направлениям</u></div>
+                <div class="bf" data-bf><span>География</span><u>страны и города, где вы работаете</u></div>
+                <div class="bf" data-bf><span>Аудитории</span><u>возраст, интересы, похожие покупатели</u></div>
+                <div class="brief-f" id="briefF"><i>✓</i><b>Бриф сохранён — агент работает по нему каждый день</b></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3 · кабинет -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 2 · Настройка</span>
+            <h2>Собирает рекламный кабинет с нуля</h2>
+            <p class="sub">Кампании, группы, аудитории, гео — всё создаётся за один прогон и по единым названиям.</p>
+            <div class="cab">
+              <div class="tree">
+                <div class="tn l1" data-tn><i class="d"></i><b>Кампания · направление 1</b><span>цель и бюджет свои</span></div>
+                <div class="tn l2" data-tn><i class="d"></i><b>Группа · страна, широкая аудитория</b><span>гео</span></div>
+                <div class="tn l3" data-tn><i class="d"></i><b>Объявление · видео</b></div>
+                <div class="tn l3" data-tn><i class="d"></i><b>Объявление · баннер</b></div>
+                <div class="tn l2" data-tn><i class="d"></i><b>Группа · город, интересы</b><span>интересы</span></div>
+                <div class="tn l3" data-tn><i class="d"></i><b>Объявление · видео</b></div>
+                <div class="tn l2" data-tn><i class="d"></i><b>Группа · похожая аудитория</b><span>похожие</span></div>
+                <div class="tn l3" data-tn><i class="d"></i><b>Объявление · видео</b></div>
+              </div>
+              <div class="rules">
+                <div class="rl" data-rl2><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h6"/></svg></i><b>Одно направление — одна кампания, ничего не смешивается</b></div>
+                <div class="rl" data-rl2><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></i><b>Города, страны и аудитории подбирает под ваш регион</b></div>
+                <div class="rl" data-rl2><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10M7 12h10M7 17h6"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg></i><b>Единые названия — потом видно, какое объявление сколько принесло</b></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4 · запуск -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 3 · Запуск</span>
+            <h2>Запускает сам и держит дневной бюджет</h2>
+            <p class="sub">Деньги распределяются по направлениям, а сумма групп не может выйти за рамку, которую вы поставили.</p>
+            <div class="launch">
+              <div class="tgs">
+                <div class="tg" data-tg><div class="sw"><u></u></div><b>Направление 1</b><span>ждёт запуска</span></div>
+                <div class="tg" data-tg><div class="sw"><u></u></div><b>Направление 2</b><span>ждёт запуска</span></div>
+                <div class="tg" data-tg><div class="sw"><u></u></div><b>Направление 3</b><span>ждёт запуска</span></div>
+              </div>
+              <div class="bwrap">
+                <div class="lbl">Дневной бюджет разложен по направлениям</div>
+                <div class="bbar"><i data-seg style="width:44%"></i><i data-seg style="width:33%"></i><i data-seg style="width:23%"></i></div>
+                <div class="bleg">
+                  <span data-leg><u></u>направление 1</span>
+                  <span data-leg><u></u>направление 2</span>
+                  <span data-leg><u></u>направление 3</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5 · результативность -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 4 · Каждый день</span>
+            <h2>Каждый день считает, какая группа работает</h2>
+            <p class="sub">Агент смотрит цену заявки против вашей цели, тренд за три и семь дней, клики и как часто люди видят одно и то же объявление. Из этого выходит одна простая оценка — и по ней он двигает деньги.</p>
+            <div class="perf">
+              <div class="gauge">
+                <div class="gwrap"><div class="gtrack"></div><span class="gneedle" id="needle"></span></div>
+                <div class="gleg"><span>сливает бюджет</span><span>приносит заявки</span></div>
+              </div>
+              <div class="grows">
+                <div class="gr v1" data-gr><b>Страна, широкая аудитория</b><span class="st">работает отлично</span><em>+20% бюджета</em></div>
+                <div class="gr v2" data-gr><b>Город, интересы</b><span class="st">нормально</span><em>оставить как есть</em></div>
+                <div class="gr v3" data-gr><b>Похожая аудитория</b><span class="st">просадка</span><em>−30% бюджета</em></div>
+                <div class="gr v4" data-gr><b>Второй город</b><span class="st">сливает</span><em>на паузу</em></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 6 · пожиратель -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 5 · Чистка</span>
+            <h2>Находит объявление, которое ест деньги</h2>
+            <p class="sub">Внутри группы одно объявление часто забирает половину бюджета и не приносит ни одной заявки. Агент видит это по каждому объявлению отдельно и выключает именно его, а не всю группу.</p>
+            <div class="eater">
+              <div class="ads">
+                <div class="lbl">Одна группа объявлений</div>
+                <div class="ad" data-ad><div class="ad-h"><b>Объявление · видео А</b><em>заявки идут</em></div><i class="bar"><u></u></i></div>
+                <div class="ad eat" data-ad><div class="ad-h"><b>Объявление · видео Б</b><em>половина бюджета, заявок нет</em></div><i class="bar"><u></u></i></div>
+                <div class="ad" data-ad><div class="ad-h"><b>Объявление · баннер</b><em>заявки идут</em></div><i class="bar"><u></u></i></div>
+              </div>
+              <div class="rules">
+                <div class="rl" data-rl><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i><b>Поднимает бюджет максимум на 30% за раз, чтобы не сбить обучение</b></div>
+                <div class="rl" data-rl><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></i><b>Снижает максимум наполовину — резкий обрыв убивает группу</b></div>
+                <div class="rl" data-rl><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.5l3.5 2"/></svg></i><b>Новые группы не запускает вечером и не трогает их, пока идёт обучение</b></div>
+                <div class="rl" data-rl><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v4.5l3 1.8"/></svg></i><b>Помнит, что делал вчера и позавчера, и не дёргает бюджет туда-сюда</b></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 7 · дашборд -->
+          <section class="scene">
+            <span class="scene-kicker">Шаг 6 · Отчёт</span>
+            <h2>Отчитывается цифрами, а не словами</h2>
+            <div class="dash">
+              <div class="brw" id="brw">
+                <div class="brw-bar"><u></u><u></u><u></u><span>дашборд клиенту · открывается по ссылке</span></div>
+                <div class="brw-view"><img src="assets6/dash.jpg" alt="" id="brwImg"></div>
+              </div>
+              <div class="dnotes">
+                <div class="nt" data-nt><span class="pn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span><span><b>Куда ушли деньги</b><span>расход, заявки, цена заявки и выручка на одном экране</span></span></div>
+                <div class="nt" data-nt><span class="pn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M9 9v11"/></svg></span><span><b>Каждое объявление отдельно</b><span>видно, какой ролик приносит заявки, а какой просто тратит</span></span></div>
+                <div class="nt" data-nt><span class="pn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.6"/><path d="M11 18.5h2"/></svg></span><span><b>Открывается с телефона</b><span>ссылка, а не файл — заходите когда угодно</span></span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 8 · итог -->
+          <section class="scene">
+            <span class="scene-kicker">Итог</span>
+            <div class="fin" id="fin">
+              <span class="big">Реклама без вас</span>
+              <span class="cap">вы даёте доступ и бюджет — остальное агент делает сам и каждый день</span>
+            </div>
+            <div class="kits">
+              <div class="kit" data-kit><span class="kico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></span><b>Настройка с нуля</b><p>кабинет, кампании, гео и аудитории</p></div>
+              <div class="kit" data-kit><span class="kico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 9h8M8 13h5"/></svg></span><b>Объявления</b><p>тексты и связки под каждое направление</p></div>
+              <div class="kit" data-kit><span class="kico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V8M10 18V4M16 18v-6M21 18H3"/></svg></span><b>Правки каждый день</b><p>деньги уходят туда, где заявки дешевле</p></div>
+              <div class="kit" data-kit><span class="kico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v7a6 6 0 0 0 12 0V4"/><path d="M9 20h6M12 17v3"/><path d="m3 3 18 18"/></svg></span><b>Чистка бюджета</b><p>выключает то, что тратит и не приносит</p></div>
+              <div class="kit" data-kit><span class="kico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="13" rx="2.5"/><path d="M8 21h8M12 17v4"/><path d="M7 12l3-3 2.5 2.5L17 7"/></svg></span><b>Дашборд</b><p>живая ссылка с цифрами, а не отписка</p></div>
+              <div class="kit" data-kit><span class="kico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.5l3.5 2"/></svg></span><b>Без выходных</b><p>смотрит кабинет ночью и в праздники</p></div>
+            </div>
+            <div class="price" id="price"><b>$600 – $3 000</b><span>за пакет в месяц · сложность средняя</span></div>
+          </section>
+
+        </div>
+      </div>
+
+      <span class="foot-bar" id="foot"></span>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="wrap"><footer>Услуга 6 из 7 · реклама в Instagram под ключ</footer></div>
+
+<script>
+(function(){
+  "use strict";
+  var clamp01=function(v){return v<0?0:v>1?1:v;};
+  function track(p,st){
+    if(p<=st[0][0])return st[0][1];
+    var last=st[st.length-1]; if(p>=last[0])return last[1];
+    for(var i=1;i<st.length;i++){var x=st[i-1],y=st[i],sp=y[0]-x[0];
+      if(p<=y[0])return x[1]+(y[1]-x[1])*(sp?(p-x[0])/sp:0);}
+    return last[1];
+  }
+  var rail=document.getElementById('rail'); if(!rail)return;
+  var N=8, at=function(i,x){return (i+x)/N;};
+  function reveal(p,i,f,t){return track(p,[[at(i,f),0],[at(i,t),1]]);}
+  function fade(el,v,sh){ el.style.opacity=v.toFixed(3); if(sh) el.style.transform='translate3d(0,'+(sh*(1-v)).toFixed(2)+'px,0)'; }
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var narrow=function(){return innerWidth<=1000;};
+  var scenes=[].slice.call(document.querySelectorAll('.scene'));
+  var nf=new Intl.NumberFormat('ru-RU');
+
+  var NODE_CAPS=['старт','бриф','кабинет','запуск','цифры','чистка','отчёт','итог'];
+  var nodes=document.getElementById('nodes'),beads=[],wires=[];
+  NODE_CAPS.forEach(function(c,i){
+    var w=document.createElement('span'); w.className='node-wrap';
+    var bd=document.createElement('span'); bd.className='bead'; w.appendChild(bd); beads.push(bd);
+    if(i<NODE_CAPS.length-1){var wr=document.createElement('span');wr.className='wire';var f=document.createElement('i');wr.appendChild(f);w.appendChild(wr);wires.push(f);}
+    var cp=document.createElement('span'); cp.className='cap'; cp.textContent=c; w.appendChild(cp);
+    nodes.appendChild(w);
+  });
+
+  var LOG=[
+    [at(0,0.24),'подключился к рекламному кабинету'],
+    [at(1,0.14),'задаю вопросы про бизнес'],
+    [at(1,0.62),'<b>бриф собран</b>'],
+    [at(2,0.16),'создаю кампании и группы'],
+    [at(2,0.58),'подобрал гео и аудитории'],
+    [at(3,0.20),'разложил бюджет по направлениям'],
+    [at(3,0.62),'<b>реклама запущена</b>'],
+    [at(4,0.18),'смотрю цифры за 3 и 7 дней'],
+    [at(4,0.60),'добавил денег туда, где дешевле'],
+    [at(5,0.26),'нашёл объявление-пожиратель'],
+    [at(5,0.62),'<b>выключил, бюджет ушёл в рабочее</b>'],
+    [at(6,0.24),'собрал дашборд для клиента'],
+    [at(7,0.20),'и так каждый день']
+  ];
+  var tape=document.getElementById('tape');
+  var logEls=LOG.map(function(r){var e=document.createElement('div');e.className='log-line';e.innerHTML=r[1];tape.appendChild(e);return e;});
+  var LOG_CAP=11,LOG_H=24;
+
+  /* 1 · хук */
+  var HOOK=['Настроит ','рекламу ','сам.','<br>','И ','каждый ','день ','сделает ','заявки ','<em>дешевле</em>.'];
+  var hook=document.getElementById('hook'),wordEls=[];
+  HOOK.forEach(function(t){
+    if(t==='<br>'){hook.appendChild(document.createElement('br'));return;}
+    var s=document.createElement('span'); s.className='w'; s.innerHTML=t; hook.appendChild(s); wordEls.push(s);
+  });
+  var notEls=[].slice.call(document.querySelectorAll('[data-not]'));
+  var cntBudget=document.getElementById('cntBudget');
+
+  /* 2 */
+  var qEls=[].slice.call(document.querySelectorAll('[data-q]'));
+  var bfEls=[].slice.call(document.querySelectorAll('[data-bf]'));
+  var brief=document.getElementById('brief'), briefF=document.getElementById('briefF'), qCount=document.getElementById('qCount');
+
+  /* 3 */
+  var tnEls=[].slice.call(document.querySelectorAll('[data-tn]'));
+  var rl2Els=[].slice.call(document.querySelectorAll('[data-rl2]'));
+
+  /* 4 */
+  var tgEls=[].slice.call(document.querySelectorAll('[data-tg]'));
+  var segEls=[].slice.call(document.querySelectorAll('[data-seg]'));
+  var legEls=[].slice.call(document.querySelectorAll('[data-leg]'));
+
+  /* 5 */
+  var grEls=[].slice.call(document.querySelectorAll('[data-gr]'));
+  var gauge=document.querySelector('.gauge'), needle=document.getElementById('needle');
+  var GPOS=[89,58,29,7];   /* куда встаёт стрелка на каждой группе */
+
+  /* 6 */
+  var adEls=[].slice.call(document.querySelectorAll('[data-ad]'));
+  var rlEls=[].slice.call(document.querySelectorAll('[data-rl]'));
+
+  /* 7 */
+  var brw=document.getElementById('brw'), brwImg=document.getElementById('brwImg');
+  var ntEls=[].slice.call(document.querySelectorAll('[data-nt]'));
+
+  /* 8 */
+  var fin=document.getElementById('fin'), price=document.getElementById('price');
+  var kits=[].slice.call(document.querySelectorAll('[data-kit]'));
+
+  var clock=document.getElementById('clock'), foot=document.getElementById('foot');
+
+  function render(p){
+    for(var i=0;i<N;i++){
+      var lit=clamp01(p*N-i);
+      beads[i].style.background=lit>0?'var(--acc)':'var(--edge)';
+      beads[i].style.boxShadow=(lit>0.5&&lit<1)?'0 0 0 5px var(--acc-glow)':'0 0 0 0 var(--acc-glow)';
+      if(wires[i]) wires[i].style.transform='scaleX('+clamp01(p*N-i).toFixed(3)+')';
+    }
+    clock.textContent='день '+('0'+Math.max(1,Math.round(p*30))).slice(-2);
+
+    for(var sc=0;sc<N;sc++){
+      var op=sc===0?1:track(p,[[at(sc,-0.04),0],[at(sc,0.06),1]]);
+      scenes[sc].style.opacity=op.toFixed(3);
+      scenes[sc].style.pointerEvents=op>0.5?'auto':'none';
+    }
+
+    var shown=0;
+    for(var L=0;L<LOG.length;L++){
+      var o=track(p,[[LOG[L][0],0],[LOG[L][0]+0.008,1]]);
+      logEls[L].style.opacity=o.toFixed(3);
+      logEls[L].style.transform='translate3d(0,'+(6*(1-o)).toFixed(1)+'px,0)';
+      if(o>0.99) logEls[L].classList.add('done'); else logEls[L].classList.remove('done');
+      if(o>0.2) shown++;
+    }
+    tape.style.transform='translate3d(0,'+(-Math.max(0,shown-LOG_CAP)*LOG_H)+'px,0)';
+
+    /* 1 · хук */
+    wordEls.forEach(function(w,i){
+      var o=reveal(p,0,0.02+i*0.03,0.11+i*0.03);
+      w.style.opacity=o.toFixed(3); w.style.transform='translate3d(0,'+(10*(1-o)).toFixed(1)+'px,0)';
+    });
+    notEls.forEach(function(n,i){ fade(n, reveal(p,0,0.44+i*0.05,0.58+i*0.05), 10); });
+    cntBudget.textContent='$'+nf.format(Math.round(2000000*reveal(p,0,0.46,0.92)));
+
+    /* 2 · разбор */
+    var answered=0;
+    qEls.forEach(function(q,i){
+      var st=0.08+i*0.055;
+      var ap=reveal(p,1,st,st+0.05);
+      var ok=reveal(p,1,st+0.05,st+0.09);
+      q.style.opacity=ap.toFixed(3);
+      q.style.transform='translate3d('+(-18*(1-ap)).toFixed(1)+'px,0,0)';
+      q.classList.toggle('ok', ok>0.7);
+      if(ok>0.7) answered++;
+    });
+    qCount.textContent=answered+' / '+qEls.length;
+    fade(brief, reveal(p,1,0.10,0.22), 14);
+    bfEls.forEach(function(b,i){
+      var st=0.26+i*0.075;
+      var ap=reveal(p,1,st,st+0.05);
+      var fill=reveal(p,1,st+0.02,st+0.11);
+      b.style.opacity=ap.toFixed(3);
+      b.querySelector('u').style.clipPath='inset(0 '+((1-fill)*100).toFixed(1)+'% 0 0)';
+    });
+    fade(briefF, reveal(p,1,0.82,0.92), 10);
+
+    /* 3 · кабинет */
+    tnEls.forEach(function(t,i){
+      var st=0.06+i*0.065;
+      var o=reveal(p,2,st,st+0.06);
+      t.style.opacity=o.toFixed(3);
+      t.style.transform='translate3d('+(-16*(1-o)).toFixed(1)+'px,0,0)';
+    });
+    rl2Els.forEach(function(r,i){ fade(r, reveal(p,2,0.40+i*0.12,0.54+i*0.12), 10); });
+
+    /* 4 · запуск */
+    tgEls.forEach(function(t,i){
+      var st=0.06+i*0.08;
+      var ap=reveal(p,3,st,st+0.07);
+      var on=reveal(p,3,st+0.07,st+0.11);
+      t.style.opacity=ap.toFixed(3);
+      t.style.transform='translate3d(0,'+(12*(1-ap)).toFixed(1)+'px,0)';
+      if(on>0.6){ t.classList.add('on'); t.querySelector('span').textContent='реклама идёт'; }
+      else { t.classList.remove('on'); t.querySelector('span').textContent='ждёт запуска'; }
+    });
+    segEls.forEach(function(s,i){
+      s.style.transform='scaleX('+reveal(p,3,0.40+i*0.08,0.56+i*0.08).toFixed(3)+')';
+    });
+    legEls.forEach(function(l,i){ fade(l, reveal(p,3,0.46+i*0.08,0.60+i*0.08), 6); });
+
+    /* 5 · результативность */
+    fade(gauge, reveal(p,4,0.06,0.16), 12);
+    var gstops=[[at(4,0.16),50]];
+    grEls.forEach(function(g,i){
+      var st=0.22+i*0.13;
+      fade(g, reveal(p,4,st,st+0.09), 10);
+      gstops.push([at(4,st+0.07),GPOS[i]]);
+      g.classList.toggle('now', p>=at(4,st+0.04) && p<at(4,st+0.17));
+    });
+    needle.style.left=track(p,gstops).toFixed(2)+'%';
+
+    /* 6 · пожиратель */
+    var grow=reveal(p,5,0.10,0.44);
+    var kill=reveal(p,5,0.52,0.70);
+    var flow=reveal(p,5,0.60,0.82);
+    adEls.forEach(function(a,i){
+      fade(a, reveal(p,5,0.04+i*0.06,0.16+i*0.06), 10);
+      var u=a.querySelector('u'), w;
+      if(i===1){ w=grow*0.94*(1-kill); }
+      else { w=grow*(i===0?0.34:0.26)+flow*0.30; }
+      u.style.transform='scaleX('+w.toFixed(3)+')';
+    });
+    if(kill>0.6){
+      adEls[1].classList.add('off');
+      adEls[1].querySelector('em').textContent='выключено';
+    } else {
+      adEls[1].classList.remove('off');
+      adEls[1].querySelector('em').textContent='половина бюджета, заявок нет';
+    }
+    rlEls.forEach(function(r,i){ fade(r, reveal(p,5,0.24+i*0.11,0.38+i*0.11), 10); });
+
+    /* 7 · дашборд */
+    fade(brw, reveal(p,6,0.06,0.20), 16);
+    var dz=reveal(p,6,0.10,0.90);
+    brwImg.style.transform='translate3d(0,0,0) scale('+(1+0.045*dz).toFixed(4)+')';
+    brwImg.style.transformOrigin='50% '+(18+dz*44).toFixed(1)+'%';
+    ntEls.forEach(function(n,i){ fade(n, reveal(p,6,0.34+i*0.11,0.50+i*0.11), 10); });
+
+    /* 8 · итог */
+    fade(fin, reveal(p,7,0.04,0.18), 14);
+    kits.forEach(function(k,i){ fade(k, reveal(p,7,0.18+i*0.08,0.34+i*0.08), 14); });
+    fade(price, reveal(p,7,0.68,0.84), 10);
+
+    foot.style.transform='scaleX('+p.toFixed(4)+')';
+  }
+
+  function tick(){
+    var range=rail.offsetHeight-innerHeight;
+    render(clamp01(-rail.getBoundingClientRect().top/(range||1)));
+  }
+  var queued=false;
+  function onScroll(){ if(queued)return; queued=true; requestAnimationFrame(function(){tick();queued=false;}); }
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState!=='visible')return; queued=false; tick(); });
+
+  function flatten(){
+    rail.style.height='auto'; render(1);
+    scenes.forEach(function(sc){sc.style.opacity='1';});
+    tape.style.transform='none';
+    logEls.forEach(function(l){l.style.opacity='1';l.style.transform='none';});
+    wordEls.forEach(function(w){w.style.opacity='1';w.style.transform='none';});
+    [].slice.call(document.querySelectorAll('[data-not],[data-q],[data-bf],[data-tn],[data-rl],[data-rl2],[data-tg],[data-leg],[data-gr],[data-ad],[data-nt],[data-kit]'))
+      .forEach(function(e){e.style.opacity='1';e.style.transform='none';});
+    [].slice.call(document.querySelectorAll('.bf u')).forEach(function(u){u.style.clipPath='none';});
+    brief.style.opacity='1'; briefF.style.opacity='1'; gauge.style.opacity='1';
+    brw.style.opacity='1'; brwImg.style.transform='none';
+    fin.style.opacity='1'; price.style.opacity='1';
+  }
+  function boot(){
+    if(reduce||narrow()){flatten();return;}
+    rail.style.height=''; addEventListener('scroll',onScroll,{passive:true}); tick();
+  }
+  addEventListener('resize',function(){removeEventListener('scroll',onScroll);boot();},{passive:true});
+  boot();
+})();
+</script>
+
+</body></html>

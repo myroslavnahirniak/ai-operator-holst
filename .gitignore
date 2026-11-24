@@ -1,0 +1,10 @@
+# локальні бекапи і скріни перевірок
+_bak-*/
+shots*/
+# копія сайту Софії — окремий проєкт (ai-operator-agents.vercel.app), 100+ МБ
+sajt-src/
+# Vercel / система
+.vercel/
+.DS_Store
+__pycache__/
+node_modules/

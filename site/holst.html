@@ -1,0 +1,1273 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Холст AI-Оператора</title>
+<meta name="description" content="Семь услуг, которые делают AI-агенты, с примерами и ценами. Охотник, формула заработка и три пакета программы.">
+<meta name="theme-color" content="#0b0c0e">
+<meta property="og:title" content="Холст AI-Оператора">
+<meta property="og:description" content="Семь услуг с примерами и ценами, охотник, формула заработка и пакеты программы.">
+<meta property="og:image" content="https://ai-operator-holst.vercel.app/media/og-bonus.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{
+  --ink:#0b0c0e;--ink-2:#121417;--ink-3:#1a1d22;
+  --cream:#f4efe7;--cream-soft:#cabfb1;--cream-mut:#a99e90;
+  --cool:#c2ccd2;--paper:#e9edf0;--d-txt:#26323a;--d-mut:#56626b;
+  --gold:#fdd506;--gold-deep:#e6be00;--red:#f0432e;--amber:#f5a524;
+  /* шкалы каталога: зелёный — легко/свободно, янтарь — средне, коралл — плотно, голубой — платят каждый месяц */
+  --mint:#5be3a1;--coral:#ff6b5a;--sky:#7cc4ff;--heat:#ff8a3d;
+  --line:rgba(244,239,231,.13);--line-2:rgba(244,239,231,.07);--dline:rgba(11,12,14,.1);
+  --sans:"Inter",system-ui,-apple-system,sans-serif;
+  --display:"Inter Tight","Inter",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,monospace;
+  --maxw:1240px;--pad:clamp(16px,4.5vw,56px);--navh:52px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html.lock{overflow:hidden}
+body{margin:0;background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,video{max-width:100%;display:block}
+a{color:inherit}
+button{font:inherit}
+h1,h2,h3,h4{font-family:var(--display);margin:0;letter-spacing:-.03em;line-height:1.05;text-wrap:balance}
+p{margin:0}
+figure{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+.k,.mono{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:500}
+section{padding:clamp(56px,8vw,112px) 0;scroll-margin-top:calc(var(--navh) - 1px)}
+.s-dark{background:var(--ink)}
+.s-ink2{background:var(--ink-2)}
+.s-cool{background:var(--cool);color:var(--ink)}
+.s-paper{background:var(--paper);color:var(--ink)}
+
+/* заголовки секций */
+.sh{display:grid;gap:14px}
+.sh .k{color:var(--gold)}
+.s-cool .sh .k,.s-paper .sh .k{color:#3f4a52}
+h2{font-size:clamp(32px,5.2vw,64px);font-weight:700;line-height:1.02;letter-spacing:-.04em}
+h2 em,h1 em,h3 em{font-style:normal;color:var(--gold)}
+.s-cool h2 em,.s-paper h2 em,.s-paper h3 em.mk{color:inherit;background:linear-gradient(transparent 60%,var(--gold) 60%,var(--gold) 92%,transparent 92%)}
+.sub{margin-top:18px;max-width:66ch;color:var(--cream-soft);font-size:clamp(15px,1.5vw,17.5px);text-wrap:pretty}
+.sub.w2{max-width:none;text-wrap:balance}
+.nw{white-space:nowrap}
+.sub b{color:var(--cream);font-weight:600}
+.s-cool .sub,.s-paper .sub{color:var(--d-txt)}
+.s-cool .sub b,.s-paper .sub b{color:var(--ink)}
+.lead{color:var(--cream-soft);font-size:clamp(15px,1.5vw,17px)}
+.lead b{color:var(--cream);font-weight:600}
+
+/* кнопки */
+.pill{display:inline-flex;align-items:center;gap:12px;border:0;border-radius:100px;background:var(--ink);color:var(--cream);padding:9px 9px 9px 20px;font-weight:600;font-size:14.5px;cursor:pointer;text-decoration:none;transition:transform .2s var(--ease),box-shadow .2s}
+.pill i{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--ink);font-style:normal;font-weight:700;transition:transform .2s var(--ease)}
+.pill:hover{transform:translateY(-1px);box-shadow:0 10px 26px -12px rgba(11,12,14,.6)}
+.pill:hover i{transform:translateX(2px)}
+.pill.gold{background:var(--gold);color:var(--ink)}
+.pill.gold i{background:var(--ink);color:var(--gold)}
+.pill:focus-visible,.ghost:focus-visible,.sr:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.ghost{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(11,12,14,.22);border-radius:100px;background:transparent;color:var(--ink);padding:11px 17px;font-size:13.5px;font-weight:500;text-decoration:none;cursor:pointer;transition:border-color .2s,background .2s}
+.ghost:hover{border-color:var(--ink);background:rgba(255,255,255,.35)}
+.ghost.dark,.s-dark .ghost,.s-ink2 .ghost{color:var(--cream);border-color:rgba(244,239,231,.22)}
+.ghost.dark:hover,.s-dark .ghost:hover{border-color:var(--gold);background:transparent;color:var(--gold)}
+
+/* маркеры-квадраты */
+.dots{display:grid;gap:9px}
+.dots li{position:relative;padding-left:26px;font-size:15.5px;line-height:1.45}
+.dots li::before{content:"";position:absolute;left:0;top:.28em;width:12px;height:12px;background:var(--gold);box-shadow:0 0 0 2px var(--ink);border-radius:2px}
+.dots.light li::before{background:var(--ink);box-shadow:0 0 0 2px rgba(11,12,14,.35)}
+
+/* ── верхняя навигация ── */
+.topnav{position:fixed;left:0;right:0;top:0;z-index:40;height:var(--navh);display:flex;align-items:center;gap:18px;padding:0 var(--pad);background:rgba(11,12,14,.84);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line-2);transform:translateY(-100%);transition:transform .35s var(--ease)}
+.topnav.show{transform:none}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:700;text-decoration:none;font-size:15px;flex:none}
+.brand i{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+.tn{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1;justify-content:flex-end}
+.tn::-webkit-scrollbar{display:none}
+.tn a{flex:none;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--cream-mut);padding:7px 11px;border-radius:100px;transition:color .2s,background .2s}
+.tn a:hover{color:var(--cream)}
+.tn a.on{color:var(--ink);background:var(--gold)}
+.tn-p{position:absolute;left:0;right:0;bottom:-1px;height:2px}
+.tn-p i{display:block;height:100%;background:var(--gold);transform-origin:left;transform:scaleX(0)}
+
+/* ── hero: видео на фоне ── */
+.hero{position:relative;overflow:hidden;background:var(--ink);min-height:min(100svh,980px);display:flex;align-items:flex-end;isolation:isolate}
+.hero-bg{position:absolute;inset:0;z-index:-1}
+.hero-bg video{position:absolute;top:0;right:0;height:100%;width:auto;aspect-ratio:1/1;max-width:none;object-fit:cover;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%);mask-image:linear-gradient(90deg,transparent 0,#000 30%)}
+.hero-bg::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(0deg,var(--ink) 0,rgba(11,12,14,.55) 26%,transparent 52%),
+             radial-gradient(70% 90% at 0% 70%,rgba(11,12,14,.92) 0,rgba(11,12,14,.55) 48%,transparent 75%)}
+.hero-live{position:absolute;right:var(--pad);top:22px;z-index:2;display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);background:rgba(11,12,14,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(253,213,6,.3);border-radius:100px;padding:7px 13px}
+.hero-live i{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 1.8s infinite}
+.hero-t{position:relative;width:100%;padding-top:clamp(90px,14vh,160px);padding-bottom:clamp(40px,7vh,84px)}
+.hero-t>*{max-width:640px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:100px;padding:7px 14px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream-soft);background:rgba(11,12,14,.5)}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(253,213,6,.5)}50%{opacity:.6;box-shadow:0 0 0 6px rgba(253,213,6,0)}}
+.hero h1{font-size:clamp(44px,7vw,104px);font-weight:800;line-height:.9;letter-spacing:-.055em;margin:22px 0 22px;text-shadow:0 4px 40px rgba(0,0,0,.5)}
+.hero h1 em{display:block}
+.hero .lead{max-width:54ch;color:#ddd4c6}
+.hero-n{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:clamp(18px,3vw,44px);margin-top:28px}
+.hero-n b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(24px,3vw,36px);letter-spacing:-.04em;color:var(--gold);line-height:1}
+.hero-n span{display:block;font-size:12.5px;color:var(--cream-mut);margin-top:6px;max-width:16ch;line-height:1.35}
+.toc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:30px;max-width:640px}
+.toc a{display:flex;align-items:center;gap:10px;text-decoration:none;border:1px solid var(--line);border-radius:14px;padding:11px 13px;font-size:13.5px;font-weight:500;color:var(--cream-soft);background:rgba(11,12,14,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:border-color .2s,color .2s,background .2s}
+.toc a s{text-decoration:none;font-family:var(--mono);font-size:10.5px;color:var(--gold)}
+.toc a:hover{border-color:var(--gold);color:var(--cream);background:rgba(253,213,6,.08)}
+
+/* ── 01 каталог ── */
+.st-head,.sr{display:grid;grid-template-columns:70px minmax(0,1.6fr) minmax(max-content,1.05fr) minmax(max-content,.9fr) minmax(0,.8fr) minmax(0,1fr) minmax(0,1.05fr) 22px;gap:14px;align-items:center}
+.st-head{margin-top:36px;padding:0 18px 10px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream-mut)}
+.st{display:grid;gap:10px}
+.sr{position:relative;text-decoration:none;color:var(--cream);padding:10px 18px 10px 10px;border-radius:18px;background:radial-gradient(60% 140% at 0% 50%,rgba(253,213,6,.07),transparent 70%),linear-gradient(180deg,#17181b,#0e0f11);border:1px solid rgba(253,213,6,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 30px -18px rgba(253,213,6,.55);transition:border-color .25s,transform .25s var(--ease),box-shadow .25s}
+.sr:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 40px -14px rgba(253,213,6,.75)}
+.sr-ic img{width:70px;height:54px;object-fit:cover;-webkit-mask-image:radial-gradient(closest-side,#000 72%,transparent);mask-image:radial-gradient(closest-side,#000 72%,transparent)}
+.sr-name{font-family:var(--display);font-weight:600;font-size:17px;line-height:1.2;display:flex;align-items:baseline;gap:10px}
+.sr-name s{text-decoration:none;font-family:var(--mono);font-size:10.5px;color:var(--gold);flex:none}
+.sr-price b{display:block;white-space:nowrap;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.03em;line-height:1.05;color:var(--gold);background:linear-gradient(180deg,#fff3a6 0%,var(--gold) 50%,#f2a900 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sr-price em{display:block;font-style:normal;font-size:12px;color:var(--cream-mut);margin-top:3px}
+.sr-pay,.sr-sl{justify-self:start;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;border:1px solid var(--line);border-radius:100px;padding:5px 11px;color:var(--cream-soft);white-space:nowrap;max-width:100%}
+.sr-pay{justify-self:center;border:0;padding:0;background:none;white-space:normal;text-align:center;line-height:1.3;font-size:13px;font-weight:500;color:var(--cream-mut)}
+.sr-pay.pm{gap:5px;font-size:12px;white-space:nowrap;color:var(--sky);border:1px solid rgba(124,196,255,.3);background:rgba(124,196,255,.08);border-radius:100px;padding:5px 10px}
+.sr-pay.pm::before{content:"↻";font-weight:700}
+.st-head span:nth-child(4){text-align:center}
+.sr-sl i{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.sr-sl.lo{color:#b4f2d2;border-color:rgba(91,227,161,.38);background:rgba(91,227,161,.08)}
+.sr-sl.lo i{background:var(--mint);box-shadow:0 0 8px rgba(91,227,161,.8)}
+.sr-sl.md{color:#ffd7a0;border-color:rgba(245,165,36,.4);background:rgba(245,165,36,.08)}
+.sr-sl.md i{background:var(--amber);box-shadow:0 0 8px rgba(245,165,36,.8)}
+.sr-sl.hi{color:#ffbdb4;border-color:rgba(255,107,90,.4);background:rgba(255,107,90,.08)}
+.sr-sl.hi i{background:var(--coral);box-shadow:0 0 8px rgba(255,107,90,.8)}
+.sr-g{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 10px}
+.sr-g em{display:none;grid-column:1/-1;font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--cream-mut)}
+.sr-g b{font-family:var(--display);font-weight:800;font-size:19px;min-width:1.4em;text-align:right}
+.sr-g em u{text-decoration:none}
+/* заполненное деление показывает свой кусок градиента всей шкалы */
+.segs{display:flex;gap:2px}
+.segs i{flex:1;height:6px;border-radius:2px;background:rgba(244,239,231,.09)}
+.segs i.on{background-size:1000% 100%;background-position:calc(var(--k) / 9 * 100%) 0}
+.sp .segs i.on{background-image:linear-gradient(90deg,var(--heat),var(--gold) 70%,#fff08a)}
+.kk .segs i.on{background-image:linear-gradient(90deg,var(--mint),var(--gold) 45%,var(--amber) 65%,var(--coral))}
+.sr-g.sp b{background:linear-gradient(90deg,var(--heat),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.kk.k1 b,.kk.k1 em u{color:var(--mint)}
+.kk.k2 b,.kk.k2 em u{color:var(--amber)}
+.kk.k3 b,.kk.k3 em u{color:var(--coral)}
+.sr-go{color:var(--gold);font-size:18px;transition:transform .2s}
+.sr:hover .sr-go{transform:translateX(3px)}
+.ins{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:22px}
+.ins>div{--c:253,213,6;position:relative;overflow:hidden;border:1px solid rgba(var(--c),.22);border-radius:18px;padding:16px 17px;background:radial-gradient(90% 70% at 100% 0%,rgba(var(--c),.12),transparent 70%),var(--ink-2)}
+.ins>div::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,rgb(var(--c)),transparent)}
+.ins .i-easy{--c:91,227,161}.ins .i-month{--c:124,196,255}.ins .i-free{--c:69,214,196}.ins .i-hot{--c:255,138,61}
+.ins .i-hot::before{background:linear-gradient(90deg,var(--heat),var(--gold),transparent)}
+.ins .k{color:rgb(var(--c));font-size:10px}
+.ins b{display:block;font-family:var(--display);font-weight:700;font-size:18px;margin:8px 0 6px;letter-spacing:-.02em}
+.ins p{font-size:13px;color:var(--cream-mut);line-height:1.45}
+.cat{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px;padding:14px 16px;border-radius:18px;border:1px dashed var(--line)}
+.cat img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}
+.cat p{flex:1 1 280px;font-size:14px;color:var(--cream-soft)}
+.cat p b{color:var(--cream)}
+
+/* ── 02 услуги ── */
+.jump{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:26px calc(var(--pad) * -1) 0;padding:0 var(--pad) 4px}
+.jump::-webkit-scrollbar{display:none}
+.jump a{flex:none;display:flex;align-items:center;gap:8px;text-decoration:none;background:rgba(255,255,255,.5);border-radius:100px;padding:5px 14px 5px 5px;font-size:13.5px;font-weight:600;box-shadow:0 0 0 1px rgba(11,12,14,.08);transition:background .2s}
+.jump a:hover{background:#fff}
+.jump img{width:34px;height:26px;object-fit:cover;border-radius:100px;background:var(--ink)}
+.svc{margin-top:24px;background:rgba(255,255,255,.55);border-radius:30px;box-shadow:0 0 0 1px rgba(11,12,14,.07),0 40px 70px -50px rgba(11,12,14,.5);padding:clamp(14px,2.4vw,30px);scroll-margin-top:calc(var(--navh) + 12px)}
+.svc-g{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(18px,3vw,44px);align-items:center}
+.svc-t{padding:clamp(4px,1vw,10px)}
+.svc-n{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;color:#3f4a52}
+.svc-n img{width:56px;height:43px;object-fit:cover;border-radius:12px;background:var(--ink)}
+.svc h3{font-size:clamp(27px,3.3vw,44px);font-weight:700;line-height:1.02;letter-spacing:-.04em;margin:14px 0 18px;color:var(--ink)}
+.svc .dots li{color:#1d262d}
+.svc-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.svc-meta span{display:inline-flex;align-items:baseline;gap:7px;background:rgba(11,12,14,.06);border-radius:100px;padding:6px 12px}
+.svc-meta em{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--d-mut)}
+.svc-meta b{font-size:13.5px}
+.svc-meta .lo{background:rgba(24,160,96,.12)}.svc-meta .lo b{color:#0f7a48}
+.svc-meta .md,.svc-meta .k2{background:rgba(214,128,0,.12)}.svc-meta .md b,.svc-meta .k2 b{color:#9a5a00}
+.svc-meta .hi,.svc-meta .k3{background:rgba(220,70,50,.11)}.svc-meta .hi b,.svc-meta .k3 b{color:#b2321f}
+.svc-meta .k1{background:rgba(24,160,96,.12)}.svc-meta .k1 b{color:#0f7a48}
+.svc-meta .sp{background:rgba(240,150,0,.13)}.svc-meta .sp b{color:#a85a00}
+.svc-price{margin-top:18px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.svc-price span{width:100%;font-size:12.5px;color:#3f4a52}
+.svc-price b{font-family:var(--display);font-weight:800;font-size:clamp(32px,3.9vw,48px);letter-spacing:-.045em;line-height:1}
+.svc-price em{font-style:normal;font-size:13.5px;color:var(--d-mut)}
+.svc-proof{margin-top:14px;font-size:14.5px;color:var(--d-txt);max-width:52ch}
+.svc-proof b{color:var(--ink)}
+.svc-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;align-items:center}
+
+.win{background:var(--ink);border-radius:18px;overflow:hidden;box-shadow:0 50px 80px -50px rgba(11,12,14,.75),0 0 0 1px rgba(11,12,14,.3);color:var(--cream)}
+.win-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.win-bar i{width:8px;height:8px;border-radius:50%;background:#3a3d42;flex:none}
+.win-bar i:first-child{background:var(--gold)}
+.win-bar span{flex:1;min-width:0;margin-left:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--cream-mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.win-bar em{flex:none;display:inline-flex;align-items:center;gap:6px;font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.win-bar em::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.8s infinite}
+.wb{position:relative;aspect-ratio:16/10;background:#111316;overflow:hidden}
+.wb>img,.wb>video{width:100%;height:100%;object-fit:cover}
+/* продавец: iPhone с перепиской в Telegram (тёмная тема Telegram) */
+.wb.tg{aspect-ratio:auto;height:clamp(500px,46vw,640px);display:flex;align-items:center;justify-content:center;gap:5%;background:radial-gradient(60% 80% at 50% 105%,rgba(253,213,6,.18),transparent 70%),#0f1113}
+.tg-note{flex:1;max-width:150px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;line-height:1.5;color:var(--cream-mut)}
+.tg-note.l{text-align:right}
+.tg-note::before{content:"";display:block;width:22px;height:2px;margin-bottom:8px;background:var(--gold)}
+.tg-note.l::before{margin-left:auto}
+.iph{flex:none;height:94%;aspect-ratio:9/19;padding:7px;border-radius:40px;background:#1b1c1f;box-shadow:0 0 0 1.5px #3a3c41,0 40px 60px -24px #000}
+.iph-scr{height:100%;display:flex;flex-direction:column;border-radius:33px;overflow:hidden;background:#0e1621;color:#fff;font-family:var(--sans)}
+.tg-st{display:flex;align-items:center;justify-content:space-between;padding:9px 20px 3px;font-size:11px;background:#17212b}
+.tg-st .isl{width:64px;height:19px;border-radius:12px;background:#000}
+.tg-st .bat{width:19px;height:9px;border:1.5px solid rgba(255,255,255,.85);border-radius:3px}
+.tg-hd{display:flex;align-items:center;gap:8px;padding:3px 10px 7px;background:#17212b;box-shadow:0 1px 0 rgba(0,0,0,.35)}
+.tg-hd .bk{width:22px;font-size:26px;line-height:.8;color:#5eb5f7}
+.tg-hd div{flex:1;text-align:center;line-height:1.2}
+.tg-hd b{display:block;font-size:12.5px;font-weight:600}
+.tg-hd span{font-size:10px;color:#5eb5f7}
+.tg-hd img{width:30px;height:30px;border-radius:50%;object-fit:cover}
+.tg-ch{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;gap:5px;padding:8px 8px 6px;overflow:hidden;background:radial-gradient(80% 50% at 20% 20%,rgba(94,181,247,.07),transparent 70%),radial-gradient(70% 50% at 90% 80%,rgba(124,90,247,.07),transparent 70%),#0e1621}
+.tg-ch>*{flex-shrink:0}
+.tg-day{align-self:center;font-size:9.5px;font-weight:500;color:#d6e2ee;background:rgba(0,0,0,.35);border-radius:10px;padding:2px 8px}
+.tg-b{max-width:82%;padding:5px 9px 6px;border-radius:13px;font-size:11.5px;line-height:1.35}
+.tg-b s{float:right;margin:5px 0 -4px 8px;text-decoration:none;font-size:8.5px;color:rgba(255,255,255,.45)}
+.tg-b.in{align-self:flex-start;background:#182533;border-bottom-left-radius:4px}
+.tg-b.out{align-self:flex-end;background:#2b5278;border-bottom-right-radius:4px}
+.tg-b.out s{color:#8cc4f2}
+.tg-b.out s::after{content:" ✓✓";letter-spacing:-.18em}
+.tg-v{display:flex;align-items:center;gap:7px}
+.tg-v b{position:relative;flex:none;width:26px;height:26px;border-radius:50%;background:#5eb5f7}
+.tg-v b::after{content:"";position:absolute;left:10px;top:8px;border-left:8px solid #182533;border-top:5px solid transparent;border-bottom:5px solid transparent}
+.wave{display:flex;align-items:center;gap:1.5px;height:16px}
+.wave i{width:2px;height:calc(var(--h) * 1px);border-radius:1px;background:#5eb5f7}
+.tg-v em{font-style:normal;font-size:9px;color:#7d8b99}
+.tg-v s{align-self:flex-end;margin:0}
+.tg-k{position:relative;align-self:flex-start;width:48%;aspect-ratio:1;border-radius:50%;overflow:hidden;background:#000}
+.tg-k video{width:100%;height:100%;object-fit:cover}
+.tg-k .snd{top:7px;bottom:auto;right:50%;transform:translateX(50%);font-size:8.5px;padding:3px 8px;white-space:nowrap}
+.tg-k s{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);text-decoration:none;font-size:8.5px;color:#fff;background:rgba(0,0,0,.45);border-radius:8px;padding:1px 6px}
+.tg-in{display:flex;align-items:center;gap:8px;padding:6px 10px 13px;background:#17212b}
+.tg-in span{flex:1;font-size:11px;color:#6d7883;background:#242f3d;border-radius:14px;padding:6px 11px}
+.tg-in i{flex:none;width:15px;height:15px;border-radius:50%;border:1.5px solid #6d7883}
+.tg-in i.mic{border-radius:8px;width:10px;height:15px}
+.tg-ch>[style]{opacity:0;transform:translateY(8px);transition:opacity .45s var(--ease),transform .45s var(--ease);transition-delay:calc(var(--d) * .45s)}
+.svc.in .tg-ch>[style]{opacity:1;transform:none}
+.wb.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-content:center;padding:4% 4%;background:radial-gradient(70% 90% at 50% 100%,rgba(253,213,6,.16),transparent 70%),#111316}
+.wb.trio img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;box-shadow:0 20px 30px -18px #000;animation:bob 6s ease-in-out infinite;animation-delay:calc(var(--i) * -2s)}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.wb.phones{display:flex;justify-content:center;align-items:center;gap:3.5%;padding:4% 6%;background:radial-gradient(60% 80% at 50% 110%,rgba(253,213,6,.18),transparent 70%),#0f1113}
+.ph{position:relative;width:25%;aspect-ratio:9/16;border-radius:16px;overflow:hidden;border:2px solid #2a2d33;background:#000}
+.ph:nth-child(2){transform:translateY(-4%)}
+.ph video{width:100%;height:100%;object-fit:cover}
+.ph figcaption{position:absolute;left:0;right:0;bottom:0;padding:18px 6px 6px;background:linear-gradient(transparent,rgba(0,0,0,.8));font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;text-align:center;color:var(--cream)}
+.win-log{display:flex;flex-wrap:wrap;align-items:center;gap:4px 0;padding:10px 14px;font-family:var(--mono);font-size:11px;border-top:1px solid rgba(255,255,255,.06);color:#6b675f;min-height:38px}
+.win-log s{text-decoration:none;color:var(--gold);margin-right:8px}
+.win-log span{transition:color .3s}
+.win-log span+span::before{content:"→";margin:0 7px;color:#3a3d42}
+.win-log span.on{color:var(--cream-soft)}
+.win-log span.cur{color:var(--gold)}
+
+.more{scroll-margin-top:calc(var(--navh) + 12px);margin-top:clamp(14px,2vw,22px);background:var(--ink);color:var(--cream);border-radius:24px;padding:clamp(16px,2.6vw,32px)}
+.more-b{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.gh{margin-top:8px}
+.gh:first-child{margin-top:0}
+.gh h4{font-size:clamp(19px,2vw,24px);font-weight:700}
+.gh p{margin-top:6px;font-size:14px;color:var(--cream-mut);text-wrap:pretty}
+.gh p.w3{max-width:700px;text-wrap:balance}
+.gh p b{color:var(--cream-soft)}
+.m .mv{position:relative;border-radius:14px;overflow:hidden;background:var(--ink-3);border:1px solid var(--line-2)}
+.m[style] .mv{height:100%}
+.m .mv img,.m .mv video{width:100%;height:100%;object-fit:cover}
+.m:not([style]) .mv:not([style]) img{height:auto}
+.m figcaption{font-size:12.5px;color:var(--cream-mut);padding:8px 2px 0;line-height:1.4}
+.m figcaption b{display:block;color:var(--cream);font-weight:600;font-size:14px}
+.tops .mv img{object-position:top}
+.m.round .mv{border-radius:50%;aspect-ratio:1}
+.m.round{align-self:center}
+.m.wide .mv img{height:auto}
+.snd{position:absolute;right:8px;bottom:8px;z-index:2;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:rgba(11,12,14,.72);color:var(--cream);border:1px solid rgba(255,255,255,.22);border-radius:100px;padding:6px 11px;cursor:pointer}
+.snd::before{content:"♪ "}
+.snd.on{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.m.round .snd{right:50%;transform:translateX(50%);bottom:10px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+.g2.vert{max-width:640px}
+.g3.vert{align-items:center}
+.g2.car{max-width:640px}
+.talls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.tall-v{position:relative;aspect-ratio:10/16;border-radius:12px;overflow:hidden;background:#fff;border:1px solid var(--line-2)}
+.tall-v img{position:absolute;left:0;top:0;width:100%;height:auto}
+.tall-v img.go{animation:tallScroll 30s ease-in-out infinite alternate}
+@keyframes tallScroll{0%,8%{transform:translateY(0)}92%,100%{transform:translateY(calc(var(--dy) * -1px))}}
+.tall figcaption{font-size:12.5px;color:var(--cream-mut);padding-top:8px}
+.tall figcaption b{display:block;color:var(--cream);font-weight:600;font-size:14px}
+.genres{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.genres>div,.nos>div{border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+.genres b{display:block;font-family:var(--display);font-size:16px}
+.genres span{display:block;font-size:12.5px;color:var(--cream-mut);margin-top:4px;line-height:1.4}
+.nos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.nos b{display:block;font-family:var(--display);font-weight:800;font-size:22px;color:var(--red);line-height:1}
+.nos span{display:block;font-size:12.5px;color:var(--cream-mut);margin-top:6px}
+.beforeafter{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,.62fr);gap:12px;align-items:center}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.facts>div{border:1px solid var(--line);border-radius:14px;padding:14px 15px}
+.facts b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(22px,2.6vw,28px);color:var(--gold);line-height:1;letter-spacing:-.03em}
+.facts span{display:block;font-size:12.5px;color:var(--cream-mut);margin-top:7px;line-height:1.4}
+.week{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.week>div{border:1px solid var(--line);border-radius:14px;padding:12px 13px;font-size:13px;color:var(--cream-soft);line-height:1.4}
+.week s{display:block;text-decoration:none;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.memo{border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:grid;gap:2px;max-width:520px}
+.memo .mono{color:var(--cream-mut);margin-bottom:8px;font-size:10px}
+.memo div{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--line-2);font-size:14px}
+.memo div b{font-family:var(--mono);color:var(--cream-soft);font-weight:500}
+.memo .tot b{color:var(--gold);font-family:var(--display);font-size:20px;font-weight:800}
+.scheme{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.scheme span{border:1px solid rgba(253,213,6,.45);border-radius:100px;padding:8px 14px;font-weight:600;font-size:14px}
+.scheme i{font-style:normal;color:var(--gold)}
+.budget{border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.budget .mono{color:var(--cream-mut);font-size:10px;margin-bottom:6px}
+.br{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line-2);font-size:14px}
+.br em{font-style:normal;color:var(--cream-mut);font-size:13px}
+.br b{font-family:var(--mono);font-weight:500;font-size:12.5px;text-align:right}
+.br.good b{color:var(--gold)}
+.br.warn b{color:var(--amber)}
+.br.bad b{color:var(--red)}
+.robot{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:clamp(14px,2.4vw,28px);align-items:center}
+.ol8{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+.ol8 li{display:flex;gap:10px;align-items:baseline;border-top:1px solid var(--line-2);padding:6px 0;font-size:14px;color:var(--cream-soft);line-height:1.35}
+.ol8 li:first-child{border-top:0}
+.ol8 s{text-decoration:none;font-family:var(--mono);font-size:10.5px;color:var(--gold)}
+.steps3{align-items:stretch}
+.steps3 .st img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px}
+.steps3 figcaption{padding-top:10px;font-size:13px;color:var(--cream-mut);line-height:1.45}
+.steps3 figcaption s{display:block;text-decoration:none;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.steps3 figcaption b{display:block;font-family:var(--display);font-size:17px;color:var(--cream);margin:4px 0 4px}
+.ladder{border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.ladder .mono{color:var(--cream-mut);font-size:10px;margin-bottom:6px;letter-spacing:.1em}
+.lr{display:grid;grid-template-columns:52px minmax(0,1fr) 64px;gap:10px;align-items:center;padding:6px 0;font-size:13px}
+.lr span{font-family:var(--mono);color:var(--cream-mut);font-size:11.5px}
+.lr .bar{height:8px;border-radius:4px;background:rgba(244,239,231,.08);overflow:hidden}
+.lr .bar i{display:block;height:100%;background:var(--cream-mut);border-radius:4px}
+.lr .bar.on i{background:var(--gold)}
+.lr b{text-align:right;font-family:var(--mono);font-weight:500}
+.note{font-size:14px;color:var(--cream-soft);border-left:2px solid var(--gold);padding-left:12px}
+.lnk{display:flex;flex-wrap:wrap;gap:8px}
+.lnk a{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:100px;padding:8px 14px;font-size:13px;text-decoration:none;color:var(--cream-soft);transition:border-color .2s,color .2s}
+.lnk a span{color:var(--gold)}
+.lnk a:hover{border-color:var(--gold);color:var(--cream)}
+
+/* ── 03 охотник ── */
+.hunt{position:relative;height:380vh;margin-top:clamp(28px,4vw,48px)}
+.hunt-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#050607}
+.hunt-cv{position:absolute;inset:0}
+.hunt-cv canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hunt-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .4s}
+.hunt-cv.ready .hunt-ph{opacity:0}
+.hunt-cv::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,6,7,.7),transparent 55%),linear-gradient(0deg,rgba(5,6,7,.65),transparent 45%);pointer-events:none}
+.hunt-txt{position:absolute;left:var(--pad);bottom:clamp(28px,7vh,72px);width:min(520px,calc(100% - var(--pad) * 2));padding:20px 22px;border-radius:20px;background:rgba(8,9,10,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(253,213,6,.28)}
+.hp{display:none}
+.hp.on{display:block;animation:hpIn .5s var(--ease)}
+@keyframes hpIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hp .k{color:var(--gold)}
+.hp h3{font-size:clamp(24px,2.8vw,36px);font-weight:700;margin:10px 0 8px;letter-spacing:-.035em}
+.hp p{color:var(--cream-soft);font-size:15.5px}
+.hunt-bar{height:2px;background:rgba(255,255,255,.12);margin-top:16px;border-radius:2px;overflow:hidden}
+.hunt-bar i{display:block;height:100%;background:var(--gold);transform-origin:left;transform:scaleX(0)}
+.aim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,56px);align-items:center;margin-top:clamp(40px,6vw,80px)}
+.aim img{border-radius:24px;width:100%;aspect-ratio:16/9;object-fit:cover}
+.m.bot .mv img{object-position:60% 22%}
+.aim .k{color:var(--gold)}
+.aim h3{font-size:clamp(26px,3.2vw,42px);font-weight:700;margin:12px 0 14px;letter-spacing:-.04em}
+.aim-rows{margin-top:22px;display:grid;gap:2px}
+.aim-rows div{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-top:1px solid var(--line);padding:12px 0}
+.aim-rows span{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream-mut)}
+.aim-rows b{font-family:var(--display);font-size:clamp(18px,2vw,24px);font-weight:700}
+.aim-rows div:last-child b{color:var(--gold)}
+.hunt-run{margin-top:clamp(28px,4vw,48px);background:var(--ink-2);border:1px solid var(--line);border-radius:26px;padding:clamp(16px,2.6vw,30px);display:grid;gap:16px}
+.hr-h{display:grid;gap:12px}
+.hr-h .k{color:var(--cream-mut)}
+.hr-h ol{display:flex;flex-wrap:wrap;gap:6px;counter-reset:h}
+.hr-h li{counter-increment:h;border:1px solid var(--line);border-radius:100px;padding:6px 12px;font-size:13px;color:var(--cream-soft)}
+.hr-h li::before{content:"0" counter(h) " ";font-family:var(--mono);font-size:10px;color:var(--gold)}
+.funnel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.funnel div{border-radius:18px;padding:18px;background:var(--ink-3)}
+.funnel b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(34px,4.6vw,56px);letter-spacing:-.05em;line-height:1}
+.funnel span{display:block;font-size:13px;color:var(--cream-mut);margin-top:8px}
+.funnel .on{background:var(--gold);color:var(--ink)}
+.funnel .on span{color:rgba(11,12,14,.7)}
+.why{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.why div{border:1px solid var(--line);border-radius:14px;padding:13px 15px}
+.why b{display:block;font-family:var(--display);font-size:20px;color:var(--gold)}
+.why span{display:block;font-size:13px;color:var(--cream-mut);margin-top:5px;line-height:1.4}
+.target{margin-top:clamp(28px,4vw,48px)}
+.letter{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:0 clamp(18px,3vw,36px);align-items:start;border:1px solid var(--line);border-radius:24px;padding:clamp(16px,2.4vw,26px);background:var(--ink-2)}
+.letter .k{grid-column:1/-1;color:var(--cream-mut);font-size:10px}
+.lt{margin-top:12px;background:var(--cream);color:var(--ink);border-radius:16px;padding:18px 20px;font-size:14.5px;line-height:1.55;display:grid;gap:10px;box-shadow:0 30px 50px -30px rgba(253,213,6,.35)}
+.lt mark{background:var(--gold);color:var(--ink);padding:0 3px;border-radius:3px}
+.lt small{font-size:12px;color:var(--d-mut)}
+.lt-why{display:grid;gap:8px;margin-top:12px}
+.lt-why div{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:12px;font-size:13px;border-top:1px solid var(--line-2);padding-top:8px}
+.lt-why b{color:var(--gold);font-weight:600}
+.lt-why span{color:var(--cream-mut)}
+.first{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(18px,3vw,40px);margin-top:clamp(28px,4vw,48px);align-items:start}
+.first .k{color:var(--gold)}
+.first h3{font-size:clamp(24px,2.8vw,36px);font-weight:700;margin:12px 0 12px}
+.first h3 i{font-style:normal;color:var(--gold)}
+.remind{display:grid;gap:8px;margin-top:18px}
+.remind div{border:1px solid var(--line);border-radius:14px;padding:11px 14px;display:grid;gap:4px}
+.remind em{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream-mut)}
+.remind span{font-size:14px}
+.fm{background:var(--ink-2);border:1px solid var(--line);border-radius:24px;padding:18px;display:grid;gap:10px}
+.fm .k{color:var(--cream-mut);font-size:10px}
+.fm-b{max-width:88%;padding:11px 14px;border-radius:16px;font-size:14px;line-height:1.5}
+.fm-b.me{background:var(--gold);color:var(--ink);border-bottom-left-radius:5px}
+.fm-b.them{justify-self:end;background:var(--ink-3);border-bottom-right-radius:5px}
+.fm .ghost{justify-self:start;margin-top:4px}
+.hunt-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(28px,4vw,44px)}
+
+/* ── 04 агент №8 ── */
+.s-b8{padding-top:0;background:linear-gradient(var(--ink),var(--ink))}
+.b8{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(18px,3vw,44px);background:radial-gradient(80% 120% at 0% 0%,#ffe45a,var(--gold) 45%,var(--gold-deep));color:var(--ink);border-radius:32px;padding:clamp(22px,4vw,52px);box-shadow:0 50px 90px -50px rgba(253,213,6,.6)}
+.b8-k{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;background:var(--ink);color:var(--gold);border-radius:100px;padding:7px 13px}
+.b8 h2{margin:18px 0 14px;color:var(--ink)}
+.b8 h2 em{color:var(--ink);background:none;text-decoration:underline;text-decoration-thickness:.08em;text-underline-offset:.1em}
+.b8 .lead{color:rgba(11,12,14,.78)}
+.b8 .dots{margin-top:20px}
+.b8 .dots li{color:var(--ink)}
+.b8-v{display:grid;gap:12px;align-content:start}
+.b8-price{background:var(--ink);color:var(--cream);border-radius:22px;padding:20px 22px}
+.b8-price span{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--cream-mut)}
+.b8-price b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(46px,6vw,72px);letter-spacing:-.05em;line-height:1;color:var(--gold);margin:6px 0}
+.b8-price em{font-style:normal;font-size:14px;color:var(--cream-soft)}
+.b8-stats{display:grid;gap:8px}
+.b8-stats div{border:1.5px solid rgba(11,12,14,.25);border-radius:16px;padding:12px 15px}
+.b8-stats b{display:block;font-family:var(--display);font-size:19px}
+.b8-stats span{display:block;font-size:13px;color:rgba(11,12,14,.72);margin-top:3px}
+
+/* ── 05 калькулятор ── */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(14px,2.4vw,28px);margin-top:30px;align-items:start}
+.panel{background:var(--ink-3);border:1px solid var(--line);border-radius:24px;padding:clamp(16px,2.4vw,26px)}
+.ctl .row{padding:14px 0;border-top:1px solid var(--line-2)}
+.ctl .row:first-child{border-top:0;padding-top:0}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14.5px;margin-bottom:14px;color:var(--cream-soft)}
+.ctl label b{font-family:var(--display);font-weight:800;font-size:22px;color:var(--cream)}
+.hint{font-size:12.5px;color:var(--cream-mut);margin-top:10px;line-height:1.45}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:rgba(244,239,231,.14);border-radius:4px;outline:none;margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--gold);cursor:pointer;border:4px solid var(--ink-3);box-shadow:0 0 0 1px var(--gold-deep)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;border:4px solid var(--ink-3)}
+input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(253,213,6,.3)}
+.mos{display:grid;gap:8px}
+.mo{border:1px solid var(--line);border-radius:16px;padding:13px 15px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:baseline}
+.mo .k{color:var(--cream-mut);font-size:10px}
+.mo>b{font-family:var(--display);font-weight:800;font-size:clamp(22px,3vw,30px);letter-spacing:-.04em;text-align:right;line-height:1;font-variant-numeric:tabular-nums}
+.mo .split{grid-column:1/-1;display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--cream-mut);padding-top:8px;border-top:1px solid var(--line-2);margin-top:4px}
+.mo .split em{font-style:normal}
+.mo .split i{font-style:normal;font-family:var(--mono);color:var(--cream-soft)}
+.mo:nth-child(3)>b{color:var(--gold)}
+.total{display:flex;justify-content:space-between;align-items:center;margin-top:10px;background:var(--gold);color:var(--ink);border-radius:16px;padding:14px 18px}
+.total span{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+.total b{font-family:var(--display);font-weight:800;font-size:clamp(28px,4vw,38px);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.chain{margin-top:12px}
+.chain div{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--line-2);font-size:13.5px}
+.chain i{font-style:normal;color:var(--cream-mut)}
+.chain b{font-family:var(--mono);font-weight:500}
+.kanon{margin-top:12px;border:1px solid var(--line);border-radius:16px;padding:13px 15px;font-size:13px;color:var(--cream-soft);line-height:1.5}
+.kanon b{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:6px}
+.kanon.ok{border-color:rgba(253,213,6,.5)}
+.kanon.ok b{color:var(--gold)}
+.kanon.off b{color:var(--amber)}
+.recoup{margin-top:12px;border:1px solid var(--line);border-radius:16px;padding:13px 15px}
+.recoup .k{display:block;color:var(--cream-mut);font-size:10px;margin-bottom:8px}
+.recoup div{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--line-2);font-size:13.5px}
+.recoup b{font-family:var(--mono);font-weight:500;color:var(--gold)}
+.disc{margin-top:14px;font-size:13px;color:var(--cream-mut);line-height:1.55}
+.disc b{color:var(--cream-soft)}
+
+/* ── 06 ссылки ── */
+.bar-card{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);margin-top:30px;background:var(--ink);color:var(--cream);border-radius:28px;overflow:hidden;text-decoration:none;box-shadow:0 40px 80px -50px rgba(11,12,14,.8);transition:transform .25s var(--ease)}
+.bar-card:hover{transform:translateY(-3px)}
+.bar-card img{width:100%;height:100%;object-fit:cover;min-height:280px}
+.bar-card>div{padding:clamp(20px,3.4vw,44px);display:grid;gap:14px;align-content:center}
+.bar-card .k{color:var(--gold)}
+.bar-card h3{font-size:clamp(24px,3vw,38px);font-weight:700;letter-spacing:-.035em}
+.bar-card p{color:var(--cream-soft);font-size:14.5px;max-width:58ch}
+.bar-card .pill{justify-self:start}
+.lg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px;align-items:start}
+.lg-c{background:rgba(255,255,255,.62);border-radius:24px;padding:clamp(16px,2.2vw,24px);box-shadow:0 0 0 1px rgba(11,12,14,.06)}
+.lg-c h4{font-size:19px;font-weight:700}
+.lg-c>p{font-size:13px;color:var(--d-mut);margin-top:4px}
+.lg-c ul{margin-top:10px}
+.lg-c li a,.lg-c li button{display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid rgba(11,12,14,.09);padding:11px 22px 11px 0;color:var(--ink);font-weight:600;font-size:14.5px;text-decoration:none;cursor:pointer;position:relative;transition:color .2s}
+.lg-c li a::after,.lg-c li button::after{content:"↗";position:absolute;right:0;top:11px;color:#8b949a;font-weight:400}
+.lg-c li button::after{content:"▸"}
+.lg-c li a:hover,.lg-c li button:hover{color:#000}
+.lg-c li a:hover::after,.lg-c li button:hover::after{color:var(--ink)}
+.lg-c li span{display:block;font-weight:400;font-size:12.5px;color:var(--d-mut);margin-top:3px;line-height:1.4}
+.skills{display:block;margin-top:12px}
+.lg-c .soon{margin-top:10px;padding-top:11px;border-top:1px solid rgba(11,12,14,.09);font-size:13.5px;color:var(--d-mut)}
+/* AI-SEO: место под скрин локального запроса */
+.ask-ph{display:grid;gap:10px;justify-items:start;border:1px dashed rgba(253,213,6,.4);border-radius:14px;padding:clamp(16px,2.4vw,24px);background:radial-gradient(70% 90% at 0% 0%,rgba(253,213,6,.08),transparent 70%)}
+.ask-ph .k{color:var(--gold)}
+.ask-q{font-family:var(--display);font-weight:600;font-size:clamp(17px,2vw,22px);background:var(--ink-3);border:1px solid var(--line);border-radius:100px;padding:11px 18px}
+.ask-ph p{font-size:13px;color:var(--cream-mut)}
+.skills img{border-radius:14px;width:100%;height:auto}
+
+/* ── пакеты (18.11) ── */
+.back{flex:none;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--gold);padding:7px 0}
+.back:hover{color:var(--cream)}
+.pks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:32px;align-items:stretch}
+.pk{display:grid;align-content:start;gap:14px;background:var(--ink-3);border:1px solid var(--line);border-radius:24px;padding:clamp(18px,2.4vw,26px)}
+.pk.pk-top{border-color:rgba(253,213,6,.55);box-shadow:0 30px 70px -45px rgba(253,213,6,.55)}
+.pk header{display:grid;gap:4px}
+.pk h3{font-size:clamp(26px,2.8vw,34px);font-weight:800}
+.pk header span{font-size:13.5px;color:var(--cream-mut)}
+.pk-pr{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);padding:14px 0}
+.pk-pr s{font-family:var(--display);font-size:20px;color:var(--cream-mut);text-decoration-thickness:2px;text-decoration-color:var(--red)}
+.pk-pr b{font-family:var(--display);font-weight:800;font-size:clamp(38px,4.4vw,52px);letter-spacing:-.05em;line-height:1;color:var(--gold)}
+.pk-pr em{flex-basis:100%;font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream-mut)}
+.pk>p{font-size:14.5px;color:var(--cream-soft);line-height:1.5}
+.pk .dots li{font-size:14px}
+.gift{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(16px,3vw,40px);margin-top:16px;background:radial-gradient(80% 120% at 0% 0%,#ffe45a,var(--gold) 45%,var(--gold-deep));color:var(--ink);border-radius:28px;padding:clamp(20px,3.4vw,44px);box-shadow:0 50px 90px -55px rgba(253,213,6,.6)}
+.gift h3{margin:16px 0 12px;font-size:clamp(28px,3.6vw,46px);font-weight:800;color:var(--ink)}
+.gift h3 em{color:var(--ink);text-decoration:underline;text-decoration-thickness:.08em;text-underline-offset:.1em}
+.gift-t p{font-size:15px;color:rgba(11,12,14,.78);max-width:56ch}
+.gift-v{display:grid;gap:10px;align-content:start}
+.gift-pr{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;background:var(--ink);color:var(--cream);border-radius:20px;padding:16px 20px}
+.gift-pr span{flex-basis:100%;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--cream-mut)}
+.gift-pr s{font-family:var(--display);font-size:24px;color:var(--cream-mut);text-decoration-color:var(--red);text-decoration-thickness:2px}
+.gift-pr b{font-family:var(--display);font-weight:800;font-size:clamp(40px,5vw,60px);letter-spacing:-.05em;line-height:1;color:var(--gold)}
+.gift-left{border:1.5px solid rgba(11,12,14,.25);border-radius:16px;padding:13px 15px}
+.gift-left b{display:block;font-family:var(--display);font-size:19px}
+.seats{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;margin-top:10px}
+.seats i{aspect-ratio:1;border-radius:4px}
+.seats i.x{background:rgba(11,12,14,.18)}
+.seats i.o{background:var(--ink)}
+.pay-note{margin-top:18px;font-size:14.5px;color:var(--cream-soft);max-width:70ch}
+.pay-note b{color:var(--cream)}
+.foot-r{display:grid;gap:8px;justify-items:end}
+
+/* ── футер: тихий ── */
+.foot{background:#08090a;border-top:1px solid var(--line-2);padding:26px 0 34px}
+.foot-g{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:clamp(18px,4vw,56px);align-items:start}
+.foot-b{display:grid;gap:6px}
+.foot .brand{font-size:13px;color:#8d877e;text-decoration:none}
+.foot .brand i{width:6px;height:6px;box-shadow:none;opacity:.8}
+.foot-b span{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#4f4b46}
+.foot-t{display:grid;gap:5px;max-width:720px}
+.foot-t p{font-size:12px;line-height:1.55;color:#625e58}
+.foot-up{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#625e58;text-decoration:none;white-space:nowrap;transition:color .2s}
+.foot-up:hover{color:var(--gold)}
+
+/* ── окно разбора ── */
+.dlg{width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:var(--ink);color:var(--cream);overflow:hidden}
+.dlg::backdrop{background:rgba(0,0,0,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.dlg-bar{height:50px;display:flex;align-items:center;gap:14px;padding:0 12px 0 18px;border-bottom:1px solid var(--line)}
+.dlg-bar b{flex:1;min-width:0;font-family:var(--display);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dlg-bar a{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);text-decoration:none;white-space:nowrap}
+.dlg-bar button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--cream);cursor:pointer;font-size:15px}
+.dlg-bar button:hover{border-color:var(--gold);color:var(--gold)}
+.dlg iframe{display:block;width:100%;height:calc(100% - 50px);border:0;background:var(--ink)}
+@media (min-width:900px){.dlg{width:min(1500px,95vw);height:94vh;height:94dvh;margin:auto;border-radius:20px;border:1px solid var(--line)}}
+
+/* ── адаптив ── */
+@media (max-width:1080px){
+  .st-head{display:none}
+  .sr{grid-template-columns:56px minmax(0,1fr) minmax(0,1fr);grid-template-areas:"ic name name" "ic pr pay" "sl sp kk";gap:10px 12px;padding:12px 14px 14px 10px}
+  .sr-ic{grid-area:ic;align-self:start}.sr-ic img{width:56px;height:43px}
+  .sr-name{grid-area:name}.sr-price{grid-area:pr}.sr-pay{grid-area:pay;align-self:center}.sr-sl{grid-area:sl;align-self:end}
+  .sr-g.sp{grid-area:sp}.sr-g.kk{grid-area:kk}.sr-go{display:none}
+  .sr-g em{display:block}
+  .ins{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .svc-g{grid-template-columns:minmax(0,1fr);gap:0}
+  .svc-t{display:contents}
+  .svc-n{order:1}.svc h3{order:2;margin-bottom:14px}.svc-w{order:3;margin-bottom:18px}.svc .dots{order:4}
+  .svc-meta{order:5}.svc-price{order:6}.svc-proof{order:7}.svc-cta{order:8}
+  .talls{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  :root{--navh:48px}
+  .brand{display:none}
+  .tn{justify-content:flex-start}
+  .hero{min-height:0;display:block}
+  .hero-bg{bottom:auto;height:118vw}
+  .hero-bg video{left:0;right:auto;width:100%;height:100%;object-position:30% 50%;
+    -webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+  .hero-bg::after{background:linear-gradient(0deg,var(--ink) 0,transparent 45%)}
+  .hero-live{top:14px;right:14px;font-size:9.5px;padding:6px 11px}
+  .hero-t{padding-top:78vw;padding-bottom:36px}
+  .hero-n{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .toc{grid-template-columns:repeat(2,minmax(0,1fr))}
+  /* строка каталога: иконка+название / цена | сложность, оплата / спрос | конкуренция */
+  .sr{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"name name" "pr sl" "pr pay" "sp kk";gap:6px 14px;padding:12px 14px 14px}
+  .sr-ic{grid-area:auto;position:absolute;left:10px;top:9px}
+  .sr-name{padding-left:56px;min-height:38px;align-items:center;margin-bottom:6px}
+  .sr-sl{justify-self:end}
+  .sr-pay{justify-self:end;text-align:right;align-self:start}
+  .sr-pay.pm{font-size:11.5px;padding:4px 9px}
+  .sr-g{margin-top:8px}
+  .sr-ic img{width:48px;height:37px}
+  .sr-name{font-size:16px}
+  .sr-sl{font-size:11.5px;padding:4px 9px}
+  .sr-g b{font-size:16px}
+  .ins{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .facts>div{display:flex;align-items:baseline;gap:12px;padding:12px 14px}
+  .facts b{flex:none;min-width:3.6em}
+  .facts span{margin-top:0}
+  .mo .split{gap:4px 8px;font-size:12px}
+  .ins>div{padding:13px}
+  .ins b{font-size:16px}
+  .svc{border-radius:24px}
+  .wb.tg{height:560px}
+  .tg-note{display:none}
+  .wb.phones{aspect-ratio:4/3}
+  .ph{width:30%}
+  .win-log{font-size:10px}
+  .g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3.steps3{grid-template-columns:minmax(0,1fr)}
+  .steps3 .st{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;align-items:center}
+  .steps3 figcaption{padding-top:0}
+  .genres{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nos{grid-template-columns:minmax(0,1fr)}
+  .week{grid-template-columns:minmax(0,1fr)}
+  .week>div{display:flex;gap:12px}
+  .week s{margin:0;flex:none;width:28px}
+  .talls{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:64%;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(var(--pad) * -1 + 16px);padding-bottom:6px;scrollbar-width:none}
+  .talls::-webkit-scrollbar{display:none}
+  .tall{scroll-snap-align:start}
+  .robot{grid-template-columns:minmax(0,1fr)}
+  .foot-g{grid-template-columns:minmax(0,1fr) auto;gap:14px 18px}
+  .foot-t{grid-column:1/-1;grid-row:2}
+  .foot .brand{display:flex}
+  .br{grid-template-columns:minmax(0,1fr) auto;font-size:13.5px}
+  .br em{display:none}
+  .hunt{height:300vh}
+  .hunt-stage{display:flex;flex-direction:column;justify-content:center;padding-top:var(--navh);background:var(--ink)}
+  .hunt-cv{position:relative;inset:auto;width:100%;aspect-ratio:4/3;flex:none}
+  .hunt-cv::after{background:linear-gradient(0deg,var(--ink),transparent 30%)}
+  .hunt-txt{position:relative;left:auto;bottom:auto;width:auto;margin:6px var(--pad) 0;background:var(--ink-2);-webkit-backdrop-filter:none;backdrop-filter:none;padding:16px 18px}
+  .hp h3{font-size:24px}
+  .hp p{font-size:14.5px}
+  .aim,.letter,.first,.calc,.b8,.bar-card,.gift{grid-template-columns:minmax(0,1fr)}
+  .pks{grid-template-columns:minmax(0,1fr)}
+  .back{font-size:10px;padding-right:4px}
+  .topnav{gap:10px}
+  .tn{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18px);mask-image:linear-gradient(90deg,transparent 0,#000 18px);padding-left:12px}
+  .funnel,.why{grid-template-columns:minmax(0,1fr)}
+  .funnel div{display:flex;align-items:baseline;gap:14px;padding:14px 16px}
+  .funnel span{margin-top:0}
+  .lt-why div{grid-template-columns:minmax(0,1fr);gap:2px}
+  .bar-card img{min-height:0;max-height:320px;object-position:50% 20%}
+  .lg{grid-template-columns:minmax(0,1fr)}
+  .beforeafter{grid-template-columns:minmax(0,1.6fr) minmax(0,.6fr);gap:8px}
+}
+@media (max-width:400px){
+  .hero-n{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero-n div:last-child{grid-column:1/-1}
+  .toc a{font-size:12.5px;padding:10px 11px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-bg video{display:none}
+  .hero-bg{background:url('media/hero-bg.webp') right top/auto 100% no-repeat}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .tg-ch>[style]{opacity:1;transform:none}
+}
+</style>
+</head>
+<body id="top">
+
+<nav class="topnav" id="topnav" aria-label="Разделы">
+  <a class="brand" href="#top"><i></i>Холст</a>
+  <a class="back" href="/">← все бонусы</a>
+  <div class="tn">
+    <a href="#svodka">Каталог</a><a href="#uslugi">7 услуг</a><a href="#ohotnik">Охотник</a><a href="#calc">Формула</a><a href="#pakety">Пакеты</a>
+  </div>
+  <div class="tn-p"><i id="tnp"></i></div>
+</nav>
+
+<header class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <video autoplay muted loop playsinline preload="auto" poster="media/hero-bg.webp"><source src="media/hero-bg.mp4" type="video/mp4"></video>
+    <span class="hero-live"><i></i>агенты в работе</span>
+  </div>
+  <div class="wrap hero-t">
+    <span class="eyebrow"><i></i>подарок эфира · AI-Оператор</span>
+    <h1>Холст <em>AI‑Оператора</em></h1>
+    <p class="lead"><b>Семь услуг</b>, которые агенты делают целиком, — с примерами и ценами. <b>Охотник</b>, который находит клиентов. Формула заработка и три пакета программы.</p>
+    <div class="hero-n">
+      <div><b>7</b><span>услуг с примерами работ</span></div>
+      <div><b>$250–$2.000</b><span>чек за услугу</span></div>
+      <div><b>3</b><span>пакета по цене эфира</span></div>
+    </div>
+    <nav class="toc"><a href='#svodka'><s>01</s>Каталог 7 услуг</a><a href='#uslugi'><s>02</s>Как выглядит каждая</a><a href='#ohotnik'><s>03</s>Охотник</a><a href='#calc'><s>04</s>Формула заработка</a><a href='#pakety'><s>05</s>Пакеты и цены</a></nav>
+  </div>
+</header>
+
+<section id="svodka" class="s-dark">
+<div class="wrap">
+  <div class="sh"><span class="k">01 · каталог</span><h2>7 услуг, которые агенты <em>делают целиком</em></h2></div>
+  <p class="sub">Каждая цена — <b>за пакет, а не за штуку</b>. Спрос и конкуренция — баллы из десяти: чем ниже конкуренция, тем свободнее ниша. Нажмите на строку — откроется, как эта услуга выглядит.</p>
+  <div class="st-head" aria-hidden="true"><span></span><span>Услуга</span><span>Ваш чек</span><span>Как платят</span><span>Сложность</span><span>Спрос</span><span>Конкуренция</span><span></span></div>
+  <div class="st"><a class='sr' href='#u1'><span class='sr-ic'><img src='media/ic-1.webp' alt='' loading='lazy'></span><span class='sr-name'><s>01</s>AI-сайты, которые приводят клиентов</span><span class='sr-price'><b>$250–$1.200</b><em>за пакет</em></span><span class='sr-pay'>разово</span><span class='sr-sl lo'><i></i>лёгкая</span><span class='sr-g sp'><em>спрос</em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='on' style='--k:6'></i><i class='on' style='--k:7'></i><i class='on' style='--k:8'></i><i class='' style='--k:9'></i></span><b>9</b></span><span class='sr-g kk k3'><em>конкуренция · <u>плотно</u></em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='on' style='--k:6'></i><i class='on' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>8</b></span><span class='sr-go' aria-hidden='true'>→</span></a><a class='sr' href='#u2'><span class='sr-ic'><img src='media/ic-2.webp' alt='' loading='lazy'></span><span class='sr-name'><s>02</s>AI-дизайн</span><span class='sr-price'><b>$250–$900</b><em>за пакет</em></span><span class='sr-pay'>разово</span><span class='sr-sl lo'><i></i>лёгкая</span><span class='sr-g sp'><em>спрос</em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='on' style='--k:6'></i><i class='on' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>8</b></span><span class='sr-g kk k3'><em>конкуренция · <u>плотно</u></em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='on' style='--k:6'></i><i class='' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>7</b></span><span class='sr-go' aria-hidden='true'>→</span></a><a class='sr' href='#u3'><span class='sr-ic'><img src='media/ic-3.webp' alt='' loading='lazy'></span><span class='sr-name'><s>03</s>Продающие AI-видео</span><span class='sr-price'><b>$300–$1.200</b><em>за 8–12 роликов</em></span><span class='sr-pay'>разово</span><span class='sr-sl lo'><i></i>лёгкая</span><span class='sr-g sp'><em>спрос</em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='on' style='--k:6'></i><i class='on' style='--k:7'></i><i class='on' style='--k:8'></i><i class='on' style='--k:9'></i></span><b>10</b></span><span class='sr-g kk k2'><em>конкуренция · <u>средне</u></em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='' style='--k:5'></i><i class='' style='--k:6'></i><i class='' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>5</b></span><span class='sr-go' aria-hidden='true'>→</span></a><a class='sr' href='#u4'><span class='sr-ic'><img src='media/ic-4.webp' alt='' loading='lazy'></span><span class='sr-name'><s>04</s>Контент-завод с AI-аватаром</span><span class='sr-price'><b>$400–$1.400</b><em>в месяц</em></span><span class='sr-pay pm'>каждый месяц</span><span class='sr-sl md'><i></i>средняя</span><span class='sr-g sp'><em>спрос</em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='on' style='--k:6'></i><i class='on' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>8</b></span><span class='sr-g kk k2'><em>конкуренция · <u>средне</u></em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='' style='--k:6'></i><i class='' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>6</b></span><span class='sr-go' aria-hidden='true'>→</span></a><a class='sr' href='#u5'><span class='sr-ic'><img src='media/ic-5.webp' alt='' loading='lazy'></span><span class='sr-name'><s>05</s>AI-продавец</span><span class='sr-price'><b>$500–$2.000</b><em>за сборку и ведение</em></span><span class='sr-pay pm'>сборка + ведение</span><span class='sr-sl md'><i></i>средняя</span><span class='sr-g sp'><em>спрос</em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='on' style='--k:6'></i><i class='' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>7</b></span><span class='sr-g kk k2'><em>конкуренция · <u>средне</u></em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='' style='--k:6'></i><i class='' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>6</b></span><span class='sr-go' aria-hidden='true'>→</span></a><a class='sr' href='#u6'><span class='sr-ic'><img src='media/ic-6.webp' alt='' loading='lazy'></span><span class='sr-name'><s>06</s>AI-таргет (платная реклама)</span><span class='sr-price'><b>$300–$800</b><em>в месяц</em></span><span class='sr-pay pm'>каждый месяц</span><span class='sr-sl md'><i></i>средняя</span><span class='sr-g sp'><em>спрос</em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='on' style='--k:6'></i><i class='' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>7</b></span><span class='sr-g kk k3'><em>конкуренция · <u>плотно</u></em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='on' style='--k:6'></i><i class='' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>7</b></span><span class='sr-go' aria-hidden='true'>→</span></a><a class='sr' href='#u7'><span class='sr-ic'><img src='media/ic-7.webp' alt='' loading='lazy'></span><span class='sr-name'><s>07</s>AI-SEO (видимость в нейросетях)</span><span class='sr-price'><b>$500</b><em>в месяц</em></span><span class='sr-pay pm'>каждый месяц</span><span class='sr-sl md'><i></i>средняя</span><span class='sr-g sp'><em>спрос</em><span class='segs'><i class='on' style='--k:0'></i><i class='on' style='--k:1'></i><i class='on' style='--k:2'></i><i class='on' style='--k:3'></i><i class='on' style='--k:4'></i><i class='on' style='--k:5'></i><i class='on' style='--k:6'></i><i class='' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>7</b></span><span class='sr-g kk k1'><em>конкуренция · <u>свободно</u></em><span class='segs'><i class='on' style='--k:0'></i><i class='' style='--k:1'></i><i class='' style='--k:2'></i><i class='' style='--k:3'></i><i class='' style='--k:4'></i><i class='' style='--k:5'></i><i class='' style='--k:6'></i><i class='' style='--k:7'></i><i class='' style='--k:8'></i><i class='' style='--k:9'></i></span><b>1</b></span><span class='sr-go' aria-hidden='true'>→</span></a></div>
+  <div class="ins">
+    <div class="i-easy"><span class="k">проще всего начать</span><b>Сайты, дизайн, видео</b><p>Сложность лёгкая, платят за пакет. С этого заходят в профессию.</p></div>
+    <div class="i-month"><span class="k">платят каждый месяц</span><b>Контент, таргет, SEO</b><p>Плюс ведение продавца. Это деньги, которые повторяются.</p></div>
+    <div class="i-free"><span class="k">самая свободная ниша</span><b>AI-SEO · 1 из 10</b><p>Клиентов всё чаще ищут через нейросети, а делают это единицы.</p></div>
+    <div class="i-hot"><span class="k">самый высокий спрос</span><b>AI-видео · 10 из 10</b><p>Растёт быстрее всех — это окно закроется раньше остальных.</p></div>
+  </div>
+  <div class="cat">
+    <img src="media/vlad-ava.webp" alt="Влад Ясько" loading="lazy">
+    <p><b>Этот каталог был на эфире картинкой.</b> Здесь — он же, только живой: каждая строка открывает услугу с примерами работ.</p>
+    <a href="media/7uslug-full.webp" download="7-uslug-AI-Operator.webp" class="ghost">Сохранить картинкой ↓</a>
+  </div>
+</div>
+</section>
+
+<section id="uslugi" class="s-cool">
+<div class="wrap">
+  <div class="sh"><span class="k">02 · что внутри</span><h2>Семь услуг — <em>как это выглядит</em></h2></div>
+  <p class="sub">Слева — что получает клиент и сколько это стоит. Справа — живая работа агента. Кнопка <b>«Что делает агент»</b> открывает разбор по шагам: листайте, и агент собирает результат у вас на глазах. Ниже каждой услуги — реальные работы.</p>
+  <nav class="jump" aria-label="Услуги"><a href='#u1'><img src='media/ic-1.webp' alt='' loading='lazy'>AI-сайты</a><a href='#u2'><img src='media/ic-2.webp' alt='' loading='lazy'>AI-дизайн</a><a href='#u3'><img src='media/ic-3.webp' alt='' loading='lazy'>AI-видео</a><a href='#u4'><img src='media/ic-4.webp' alt='' loading='lazy'>Контент-завод</a><a href='#u5'><img src='media/ic-5.webp' alt='' loading='lazy'>AI-продавец</a><a href='#u6'><img src='media/ic-6.webp' alt='' loading='lazy'>AI-таргет</a><a href='#u7'><img src='media/ic-7.webp' alt='' loading='lazy'>AI-SEO</a></nav>
+  
+<article class="svc" id="u1">
+  <div class="svc-g">
+    <div class="svc-t">
+      <p class="svc-n"><img src="media/ic-1.webp" alt="" loading="lazy"><span>01 / 07</span></p>
+      <h3>AI-сайты, которые приводят клиентов</h3>
+      <ul class="dots"><li>сайт или лендинг, который продаёт</li><li>квиз, который сам квалифицирует заявку</li><li>формы, аналитика, домен — вечер вместо недель</li></ul>
+      <div class="svc-meta">
+        <span class="lo"><em>сложность</em><b>лёгкая</b></span>
+        <span class="sp"><em>спрос</em><b>9/10</b></span>
+        <span class="k3"><em>конкуренция</em><b>8/10</b></span>
+      </div>
+      <div class="svc-price"><span>Стоимость услуги</span><b>$250–$1.200</b><em>за пакет</em></div>
+      <p class="svc-proof"><b>Лучший вход в профессию.</b> 40% малого бизнеса в мире до сих пор без сайта, а каждый четвёртый говорит прямо: не делаю, потому что дорого.</p>
+      <div class="svc-cta"><button class='pill' type='button' data-demo='demo/sites.html?v=20260929a' data-title='AI-сайты: что делает агент'>Что делает агент<i>→</i></button><a class="ghost" href="#u1-more">Смотреть работы ↓</a></div>
+    </div>
+    <div class="svc-w">
+      <div class="win">
+        <div class="win-bar"><i></i><i></i><i></i><span>груминг-салон · сайт, собранный агентом</span><em>в работе</em></div>
+        <div class='wb'><video data-auto muted playsinline loop preload='none' poster='demo/assets-sites/molly-desk-poster.jpg' style='object-fit:cover'><source src='demo/assets-sites/molly-desk.mp4' type='video/mp4'></video></div>
+        <div class="win-log"><s>›</s><span style='--k:0'>конкуренты</span><span style='--k:1'>аудитория</span><span style='--k:2'>стратегия</span><span style='--k:3'>тексты</span><span style='--k:4'>опросник</span><span style='--k:5'>дизайн</span><span style='--k:6'>сборка</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="more" id="u1-more">
+    <div class="more-b"><div class='gh'><h4>Вот что собирает этот агент</h4><p>Каждый сайт — до часа времени.</p></div><div class='g3 tops'><figure class='m '><div class='mv' style='aspect-ratio:4/3'><img src='media/site-clearpoint.webp' alt='ClearPoint' width='720' height='540' loading='lazy' decoding='async'></div><figcaption><b>ClearPoint</b>Лондон</figcaption></figure><figure class='m '><div class='mv' style='aspect-ratio:4/3'><img src='media/site-lono.webp' alt='LONO' width='720' height='540' loading='lazy' decoding='async'></div><figcaption><b>LONO</b>протокол здоровья</figcaption></figure><figure class='m '><div class='mv' style='aspect-ratio:4/3'><img src='media/site-coffee.webp' alt='New Level Coffee' width='720' height='540' loading='lazy' decoding='async'></div><figcaption><b>New Level Coffee</b>Флорида</figcaption></figure></div><div class='gh'><h4>Один сайт — на компьютере и в телефоне</h4><p>Груминг-салон: агент сам адаптирует страницу под экран телефона.</p></div><div class='beforeafter'><figure class='m ' style='aspect-ratio:16/10'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='demo/assets-sites/molly-desk-poster.jpg'><source src='demo/assets-sites/molly-desk.mp4' type='video/mp4'></video></div><figcaption>Компьютер</figcaption></figure><figure class='m ' style='aspect-ratio:540/1170'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='demo/assets-sites/molly-mob-poster.jpg'><source src='demo/assets-sites/molly-mob.mp4' type='video/mp4'></video></div><figcaption>Телефон</figcaption></figure></div><figure class='m wide' style='aspect-ratio:16/10'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='media/motionsites.webp'><source src='media/motionsites.mp4' type='video/mp4'></video></div><figcaption>Шаблоны вау-сайтов под разные ниши: агент берёт дизайн из базы, а не рисует с нуля</figcaption></figure></div>
+  </div>
+</article>
+<article class="svc" id="u2">
+  <div class="svc-g">
+    <div class="svc-t">
+      <p class="svc-n"><img src="media/ic-2.webp" alt="" loading="lazy"><span>02 / 07</span></p>
+      <h3>AI-дизайн</h3>
+      <ul class="dots"><li>коммерческие предложения — именные, под конкретную сделку</li><li>рекламные объявления — десятками, чтобы было что тестировать</li><li>обложки YouTube, Reels и TikTok — пачкой, в одном стиле</li></ul>
+      <div class="svc-meta">
+        <span class="lo"><em>сложность</em><b>лёгкая</b></span>
+        <span class="sp"><em>спрос</em><b>8/10</b></span>
+        <span class="k3"><em>конкуренция</em><b>7/10</b></span>
+      </div>
+      <div class="svc-price"><span>Стоимость услуги</span><b>$250–$900</b><em>за пакет</em></div>
+      <p class="svc-proof"><b>Всё в одном стиле — за минуты</b>, без дизайнера и без студии.</p>
+      <div class="svc-cta"><button class='pill' type='button' data-demo='demo/design.html?v=20260929a' data-title='AI-дизайн: что делает агент'>Что делает агент<i>→</i></button><a class="ghost" href="#u2-more">Смотреть работы ↓</a></div>
+    </div>
+    <div class="svc-w">
+      <div class="win">
+        <div class="win-bar"><i></i><i></i><i></i><span>рекламные объявления · 3 креатива для теста</span><em>в работе</em></div>
+        <div class='wb trio'><img src='media/dz-creative-a.webp' alt='Креатив A' loading='lazy' style='--i:0'><img src='media/dz-creative-b.webp' alt='Креатив B' loading='lazy' style='--i:1'><img src='media/dz-creative-c.webp' alt='Креатив C' loading='lazy' style='--i:2'></div>
+        <div class="win-log"><s>›</s><span style='--k:0'>бриф</span><span style='--k:1'>насмотренность</span><span style='--k:2'>стиль</span><span style='--k:3'>кадры</span><span style='--k:4'>съёмка</span><span style='--k:5'>сборка</span><span style='--k:6'>отдача</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="more" id="u2-more">
+    <div class="more-b"><div class='gh'><h4>Коммерческие предложения</h4><p>Именные, под конкретную сделку. Презентация клиенту и баннеры для сайта — в том же стиле.</p></div><figure class='m wide'><div class='mv'><img src='media/dz-kp-hero.webp' alt='Шапка коммерческого предложения' width='1100' height='341' loading='lazy' decoding='async'></div></figure><div class='g3'><figure class='m kp'><div class='mv'><img src='media/dz-kp-1.webp' alt='Коммерческое предложение' width='1100' height='716' loading='lazy' decoding='async'></div></figure><figure class='m kp'><div class='mv'><img src='media/dz-kp-2.webp' alt='Коммерческое предложение' width='1100' height='737' loading='lazy' decoding='async'></div></figure><figure class='m kp'><div class='mv'><img src='media/dz-kp-3.webp' alt='Коммерческое предложение' width='1100' height='722' loading='lazy' decoding='async'></div></figure></div><figure class='m wide'><div class='mv'><img src='media/dz-banner-1.webp' alt='Баннер для сайта' width='1100' height='418' loading='lazy' decoding='async'></div><figcaption>Баннер для сайта</figcaption></figure><div class='gh'><h4>Обложки YouTube, Reels и TikTok</h4><p>Под каждый ролик, пачкой. YouTube — сверху, Reels и TikTok — снизу.</p></div><div class='g2'><figure class='m yt'><div class='mv'><img src='media/dz-yt-2.webp' alt='Обложка YouTube' width='1100' height='562' loading='lazy' decoding='async'></div></figure><figure class='m yt'><div class='mv'><img src='media/dz-yt-3.webp' alt='Обложка YouTube' width='1100' height='599' loading='lazy' decoding='async'></div></figure></div><div class='g3 tallish'><figure class='m rl'><div class='mv'><img src='media/dz-reels-1.webp' alt='Обложка Reels' width='500' height='908' loading='lazy' decoding='async'></div></figure><figure class='m rl'><div class='mv'><img src='media/dz-reels-2.webp' alt='Обложка Reels' width='500' height='884' loading='lazy' decoding='async'></div></figure><figure class='m rl'><div class='mv'><img src='media/dz-reels-3.webp' alt='Обложка Reels' width='500' height='908' loading='lazy' decoding='async'></div></figure></div><div class='lnk'><a href='https://virtual-employees.vercel.app' target='_blank' rel='noopener'>virtual-employees.vercel.app<span>↗</span></a></div></div>
+  </div>
+</article>
+<article class="svc" id="u3">
+  <div class="svc-g">
+    <div class="svc-t">
+      <p class="svc-n"><img src="media/ic-3.webp" alt="" loading="lazy"><span>03 / 07</span></p>
+      <h3>Продающие AI-видео</h3>
+      <ul class="dots"><li>сам пишет сценарий и раскадровку под площадку</li><li>человек в кадре создан нейросетью</li><li>озвучка и монтаж — без камеры и съёмочного дня</li></ul>
+      <div class="svc-meta">
+        <span class="lo"><em>сложность</em><b>лёгкая</b></span>
+        <span class="sp"><em>спрос</em><b>10/10</b></span>
+        <span class="k2"><em>конкуренция</em><b>5/10</b></span>
+      </div>
+      <div class="svc-price"><span>Стоимость услуги</span><b>$300–$1.200</b><em>за 8–12 роликов</em></div>
+      <p class="svc-proof"><b>Растёт быстрее всех: +329% за год.</b> Конкуренция 5 и тоже растёт — это окно закроется раньше остальных.</p>
+      <div class="svc-cta"><button class='pill' type='button' data-demo='demo/video.html?v=20260929a' data-title='AI-видео: что делает агент'>Что делает агент<i>→</i></button><a class="ghost" href="#u3-more">Смотреть работы ↓</a></div>
+    </div>
+    <div class="svc-w">
+      <div class="win">
+        <div class="win-bar"><i></i><i></i><i></i><span>в кадре не актёр · никто не приезжал на площадку</span><em>в работе</em></div>
+        <div class='wb'><video data-auto muted playsinline loop preload='none' poster='media/video-hero.webp' style='object-fit:cover'><source src='media/video-hero.mp4' type='video/mp4'></video><button class='snd' type='button' aria-label='Включить звук'>звук</button></div>
+        <div class="win-log"><s>›</s><span style='--k:0'>идея</span><span style='--k:1'>сценарий</span><span style='--k:2'>раскадровка</span><span style='--k:3'>кадры</span><span style='--k:4'>звук</span><span style='--k:5'>монтаж</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="more" id="u3-more">
+    <div class="more-b"><div class='gh'><h4>Под что его берут</h4></div><div class='genres'><div><b>Товары</b><span>ролик под карточку и под рекламу</span></div><div><b>Одежда</b><span>модель в кадре создана нейросетью</span></div><div><b>Услуги и клиники</b><span>показать, как всё проходит</span></div><div><b>Офлайн-объекты</b><span>показать помещение, которого ещё нет</span></div></div><div class='g2 vert'><figure class='m ' style='aspect-ratio:9/16'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='media/video-tovar.webp'><source src='media/video-tovar.mp4' type='video/mp4'></video><button class='snd' type='button' aria-label='Включить звук'>звук</button></div><figcaption>Ролик для товара</figcaption></figure><figure class='m ' style='aspect-ratio:9/16'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='media/video-odezhda.webp'><source src='media/video-odezhda.mp4' type='video/mp4'></video><button class='snd' type='button' aria-label='Включить звук'>звук</button></div><figcaption>Ролик для одежды</figcaption></figure></div><div class='g2'><figure class='m ' style='aspect-ratio:16/9'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='media/video-fitness.webp'><source src='media/video-fitness.mp4' type='video/mp4'></video></div><figcaption>Реклама приложения для тренировок: локации, зал и интерфейс телефона собраны нейросетями по раскадровке</figcaption></figure><figure class='m ' style='aspect-ratio:16/9'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='media/video-prof.webp'><source src='media/video-prof.mp4' type='video/mp4'></video><button class='snd' type='button' aria-label='Включить звук'>звук</button></div><figcaption>Анимационный ролик про профессии: другой жанр, тот же конвейер</figcaption></figure></div><div class='nos'><div><b>нет</b><span>съёмочной группы, света и оператора</span></div><div><b>нет</b><span>актёров и гонораров за съёмочный день</span></div><div><b>нет</b><span>аренды локаций и переездов</span></div></div></div>
+  </div>
+</article>
+<article class="svc" id="u4">
+  <div class="svc-g">
+    <div class="svc-t">
+      <p class="svc-n"><img src="media/ic-4.webp" alt="" loading="lazy"><span>04 / 07</span></p>
+      <h3>Контент-завод с AI-аватаром</h3>
+      <ul class="dots"><li>контент-план под площадку</li><li>посты, сценарии, Reels с аватаром</li><li>выкладка по расписанию — аккаунт живёт без вас</li></ul>
+      <div class="svc-meta">
+        <span class="md"><em>сложность</em><b>средняя</b></span>
+        <span class="sp"><em>спрос</em><b>8/10</b></span>
+        <span class="k2"><em>конкуренция</em><b>6/10</b></span>
+      </div>
+      <div class="svc-price"><span>Стоимость услуги</span><b>$400–$1.400</b><em>в месяц</em></div>
+      <p class="svc-proof"><b>Ежемесячная оплата.</b> Продавать такое сложнее разовой услуги — обычно это второй заказ у того же клиента.</p>
+      <div class="svc-cta"><button class='pill' type='button' data-demo='demo/content.html?v=20260929a' data-title='Контент-завод: что делает агент'>Что делает агент<i>→</i></button><a class="ghost" href="#u4-more">Смотреть работы ↓</a></div>
+    </div>
+    <div class="svc-w">
+      <div class="win">
+        <div class="win-bar"><i></i><i></i><i></i><span>ролики с AI-аватаром · в кадре никто не снимался</span><em>в работе</em></div>
+        <div class='wb phones'><figure class='ph'><video data-auto muted playsinline loop preload='none' poster='media/ava-1.webp'><source src='media/ava-1.mp4' type='video/mp4'></video><figcaption>Instagram · Reels</figcaption></figure><figure class='ph'><video data-auto muted playsinline loop preload='none' poster='media/ava-2.webp'><source src='media/ava-2.mp4' type='video/mp4'></video><figcaption>YouTube · Shorts</figcaption></figure><figure class='ph'><video data-auto muted playsinline loop preload='none' poster='media/ava-3.webp'><source src='media/ava-3.mp4' type='video/mp4'></video><figcaption>TikTok</figcaption></figure></div>
+        <div class="win-log"><s>›</s><span style='--k:0'>тренды недели</span><span style='--k:1'>сценарий</span><span style='--k:2'>съёмка аватаром</span><span style='--k:3'>монтаж</span><span style='--k:4'>публикация</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="more" id="u4-more">
+    <div class="more-b"><div class='gh'><h4>Автомонтаж старых видео за 10 минут</h4><p>Слева — исходник как есть. Справа — то, что агент из него сделал.</p></div><div class='beforeafter'><figure class='m ' style='aspect-ratio:16/9'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='media/montazh-do.webp'><source src='media/montazh-do.mp4' type='video/mp4'></video></div><figcaption>До</figcaption></figure><figure class='m ' style='aspect-ratio:9/16'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='media/montazh-posle.webp'><source src='media/montazh-posle.mp4' type='video/mp4'></video></div><figcaption>После</figcaption></figure></div><div class='gh'><h4>Что агенты сделали за месяц</h4><p>Аккаунт ведут агенты. Эксперт не снимает, не монтирует и не выкладывает.</p></div><div class='facts'><div><b>164</b><span>ролика</span></div><div><b>11 млн</b><span>просмотров</span></div><div><b>+58 000</b><span>подписчиков</span></div></div></div>
+  </div>
+</article>
+<article class="svc" id="u5">
+  <div class="svc-g">
+    <div class="svc-t">
+      <p class="svc-n"><img src="media/ic-5.webp" alt="" loading="lazy"><span>05 / 07</span></p>
+      <h3>AI-продавец</h3>
+      <ul class="dots"><li>отвечает 24/7 текстом, голосом и видеосообщениями</li><li>снимает сомнения и доводит до оплаты</li><li>живёт в Instagram, Telegram и WhatsApp — там, где пишут чаще всего</li></ul>
+      <div class="svc-meta">
+        <span class="md"><em>сложность</em><b>средняя</b></span>
+        <span class="sp"><em>спрос</em><b>7/10</b></span>
+        <span class="k2"><em>конкуренция</em><b>6/10</b></span>
+      </div>
+      <div class="svc-price"><span>Стоимость услуги</span><b>$500–$2.000</b><em>за сборку и ведение</em></div>
+      <p class="svc-proof"><b>Сделка на €1.500.</b> Клиент написал 23 июня, оплатил 8 июля — без единого моего сообщения.</p>
+      <div class="svc-cta"><button class='pill' type='button' data-demo='demo/seller.html?v=20260929a' data-title='AI-продавец: что делает агент'>Что делает агент<i>→</i></button><a class="ghost" href="#u5-more">Смотреть работы ↓</a></div>
+    </div>
+    <div class="svc-w">
+      <div class="win">
+        <div class="win-bar"><i></i><i></i><i></i><span>переписка агента с клиентом · Telegram</span><em>в работе</em></div>
+        <div class='wb tg'><span class='tg-note l'>Кружочек прилетает через секунды</span><div class='iph'><div class='iph-scr'><div class='tg-st'><b>21:26</b><i class='isl'></i><i class='bat'></i></div><div class='tg-hd'><span class='bk'>‹</span><div><b>Влад Ясько</b><span>в сети</span></div><img src='media/vladyusha-ava.webp' alt='' width='160' height='160'></div><div class='tg-ch'><div class='tg-day'>26 мая</div><div style='--d:0' class='tg-b out'>а запиши мне кружок, я фитнесс тренер<s>20:31</s></div><div style='--d:1' class='tg-b in'>Сейчас, расчешусь и запишу.<s>20:31</s></div><div style='--d:2' class='tg-b out'>расскажи что ты умеешь<s>20:31</s></div><div style='--d:3' class='tg-b in tg-v'><b></b><span class='wave'><i style='--h:3'></i><i style='--h:6'></i><i style='--h:9'></i><i style='--h:5'></i><i style='--h:8'></i><i style='--h:11'></i><i style='--h:7'></i><i style='--h:4'></i><i style='--h:9'></i><i style='--h:12'></i><i style='--h:6'></i><i style='--h:8'></i><i style='--h:10'></i><i style='--h:5'></i><i style='--h:7'></i><i style='--h:9'></i><i style='--h:4'></i><i style='--h:6'></i><i style='--h:8'></i><i style='--h:5'></i><i style='--h:3'></i><i style='--h:6'></i></span><em>00:24</em><s>20:31</s></div><div style='--d:4' class='tg-k'><video data-auto muted playsinline loop preload='none' poster='media/seller-krug.webp'><source src='media/seller-krug.mp4' type='video/mp4'></video><button class='snd' type='button' aria-label='Включить звук'>звук</button><s>00:25</s></div><div style='--d:5' class='tg-b out'>ты тут?<s>21:26</s></div><div style='--d:6' class='tg-b in'>Тут, на связи.<br><br>Ты фитнес-тренер — рассказывал. Что сейчас больше болит: времени нет на контент или заявок мало?<s>21:26</s></div></div><div class='tg-in'><i class='clip'></i><span>Сообщение</span><i class='mic'></i></div></div></div><span class='tg-note r'>Голосовое вашим голосом, не роботом</span></div>
+        <div class="win-log"><s>›</s><span style='--k:0'>что он знает</span><span style='--k:1'>диалог</span><span style='--k:2'>возражения</span><span style='--k:3'>кружочки</span><span style='--k:4'>голосовые</span><span style='--k:5'>оплата</span><span style='--k:6'>CRM</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="more" id="u5-more">
+    <div class="more-b"><div class='gh'><h4>Голосом, кружочком и до оплаты</h4><p>Настоящие переписки агента: голосовое вашим голосом, видеосообщение через секунды, оплата прямо в чате.</p></div><div class='g3 vert'><figure class='m ' style='aspect-ratio:9/16'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='media/seller-voice.webp'><source src='media/seller-voice.mp4' type='video/mp4'></video><button class='snd' type='button' aria-label='Включить звук'>звук</button></div><figcaption>Голосовое вашим голосом, не роботом</figcaption></figure><figure class='m round' style='aspect-ratio:1/1'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='media/seller-krug.webp'><source src='media/seller-krug.mp4' type='video/mp4'></video><button class='snd' type='button' aria-label='Включить звук'>звук</button></div><figcaption>Кружочек прилетает через секунды</figcaption></figure><figure class='m ' style='aspect-ratio:9/16'><div class='mv'><video data-auto muted playsinline loop preload='none' poster='media/seller-pay.webp'><source src='media/seller-pay.mp4' type='video/mp4'></video></div><figcaption>Оплаты, которые пришли в переписке. Доступы продавец выдал сам</figcaption></figure></div><div class='memo'><p class='mono'>что он знает о вашем бизнесе</p><div><span>Прайс и тарифы</span><b>+124</b></div><div><span>Услуги и кейсы</span><b>+86</b></div><div><span>Возражения</span><b>+57</b></div><div><span>Техники продаж</span><b>+41</b></div><div><span>Правила общения</span><b>+32</b></div><div class='tot'><span>фактов в памяти</span><b>340</b></div></div></div>
+  </div>
+</article>
+<article class="svc" id="u6">
+  <div class="svc-g">
+    <div class="svc-t">
+      <p class="svc-n"><img src="media/ic-6.webp" alt="" loading="lazy"><span>06 / 07</span></p>
+      <h3>AI-таргет (платная реклама)</h3>
+      <ul class="dots"><li>разбирает бизнес и собирает рекламный кабинет</li><li>делает креативы и запускает рекламу</li><li>каждый день двигает бюджет туда, где заявки дешевле, и отключает то, что сливает</li></ul>
+      <div class="svc-meta">
+        <span class="md"><em>сложность</em><b>средняя</b></span>
+        <span class="sp"><em>спрос</em><b>7/10</b></span>
+        <span class="k3"><em>конкуренция</em><b>7/10</b></span>
+      </div>
+      <div class="svc-price"><span>Стоимость услуги</span><b>$300–$800</b><em>в месяц</em></div>
+      <p class="svc-proof"><b>$400.000+ рекламного бюджета</b> уже прошло через этого агента. Он заменяет работу полноценного таргетолога.</p>
+      <div class="svc-cta"><button class='pill' type='button' data-demo='demo/ads.html?v=20260929a' data-title='AI-таргет: что делает агент'>Что делает агент<i>→</i></button><a class="ghost" href="#u6-more">Смотреть работы ↓</a></div>
+    </div>
+    <div class="svc-w">
+      <div class="win">
+        <div class="win-bar"><i></i><i></i><i></i><span>реклама в ленте Instagram · запустил агент</span><em>в работе</em></div>
+        <div class='wb'><img src='media/ads-phones.webp' alt='Рекламные посты в ленте Instagram с креативами агента' loading='lazy'></div>
+        <div class="win-log"><s>›</s><span style='--k:0'>разбор</span><span style='--k:1'>идеи</span><span style='--k:2'>прогноз</span><span style='--k:3'>объявления</span><span style='--k:4'>запуск</span><span style='--k:5'>24/7</span><span style='--k:6'>отчёт</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="more" id="u6-more">
+    <div class="more-b"><div class='scheme'><span>Запускает</span><i>→</i><span>Тестирует</span><i>→</i><span>Оптимизирует 24/7</span></div><div class='facts'><div><b>$400.000+</b><span>рекламного бюджета уже прошло через этого агента</span></div><div><b>24/7</b><span>смотрит цифры без выходных и отпусков</span></div><div><b>1 агент</b><span>заменяет работу полноценного таргетолога</span></div></div><div class='budget'><p class='mono'>как он двигает деньги каждый день</p><div class='br good'><span>Страна, широкая аудитория</span><em>работает отлично</em><b>+20% бюджета</b></div><div class='br'><span>Город, интересы</span><em>нормально</em><b>оставить как есть</b></div><div class='br warn'><span>Похожая аудитория</span><em>просадка</em><b>−30% бюджета</b></div><div class='br bad'><span>Второй город</span><em>сливает</em><b>на паузу</b></div></div><div class='robot'><figure class='m bot'><div class='mv' style='aspect-ratio:16/9'><img src='media/ads-robot.webp' alt='Агент-таргетолог' width='900' height='900' loading='lazy' decoding='async'></div></figure><ol class='ol8'><li><s>01</s>изучает бизнес</li><li><s>02</s>создаёт рабочие идеи</li><li><s>03</s>прогнозирует результат</li><li><s>04</s>расходует бюджет так, чтобы не уйти в минус</li><li><s>05</s>создаёт объявления</li><li><s>06</s>сам запускает рекламу</li><li><s>07</s>следит 24/7</li><li><s>08</s>делает отчёт</li></ol></div><p class='note'>Рекламный бюджет платит клиент. Это не ваш риск — вы берёте за ведение.</p></div>
+  </div>
+</article>
+<article class="svc" id="u7">
+  <div class="svc-g">
+    <div class="svc-t">
+      <p class="svc-n"><img src="media/ic-7.webp" alt="" loading="lazy"><span>07 / 07</span></p>
+      <h3>AI-SEO (видимость в нейросетях)</h3>
+      <ul class="dots"><li>бизнес находят в поиске и на картах</li><li>и в ответах нейросетей, когда у них спрашивают совет</li><li>без платной рекламы — трафик не выключается</li></ul>
+      <div class="svc-meta">
+        <span class="md"><em>сложность</em><b>средняя</b></span>
+        <span class="sp"><em>спрос</em><b>7/10</b></span>
+        <span class="k1"><em>конкуренция</em><b>1/10</b></span>
+      </div>
+      <div class="svc-price"><span>Стоимость услуги</span><b>$500</b><em>в месяц</em></div>
+      <p class="svc-proof"><b>Единственная пустая ниша каталога — конкуренция 1 из 10.</b> Клиентов всё чаще ищут через нейросети, а делают это единицы.</p>
+      <div class="svc-cta"><a class="ghost" href="#u7-more">Смотреть работы ↓</a></div>
+    </div>
+    <div class="svc-w">
+      <div class="win">
+        <div class="win-bar"><i></i><i></i><i></i><span>покупатель спрашивает нейросеть</span><em>в работе</em></div>
+        <div class='wb'><video data-auto muted playsinline loop preload='none' poster='media/seo-reel.webp' style='object-fit:cover'><source src='media/seo-reel.mp4' type='video/mp4'></video></div>
+        <div class="win-log"><s>›</s><span style='--k:0'>аудит сайта</span><span style='--k:1'>видимость в нейросетях</span><span style='--k:2'>страницы под вопросы</span><span style='--k:3'>проверка каждый месяц</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="more" id="u7-more">
+    <div class="more-b"><div class='gh'><h4>Как теперь ищут бизнес</h4><p>Три шага — и клиент уже на сайте.</p></div><div class='g3 steps3'><figure class='st'><img src='media/seo-ask.webp' alt='' loading='lazy'><figcaption><s>01</s><b>Человек спрашивает</b>у ChatGPT, Gemini или Perplexity: где купить, кого выбрать</figcaption></figure><figure class='st'><img src='media/seo-answer.webp' alt='' loading='lazy'><figcaption><s>02</s><b>Нейросеть отвечает</b>и называет сайт вашего клиента</figcaption></figure><figure class='st'><img src='media/seo-arrive.webp' alt='' loading='lazy'><figcaption><s>03</s><b>Человек приходит</b>уже готовый, его не надо уговаривать</figcaption></figure></div><div class='gh'><h4>Что делает агент</h4></div><div class='g3 steps3'><figure class='st'><img src='media/seo-gate.webp' alt='' loading='lazy'><figcaption><s>шаг 1</s><b>Видит ли сайт нейросеть</b>Очень часто сайт для неё закрыт — тогда он не попадёт в ответ никогда</figcaption></figure><figure class='st'><img src='media/seo-pages.webp' alt='' loading='lazy'><figcaption><s>шаг 2</s><b>Страницы под вопросы людей</b>Нейросеть берёт готовый ответ с первых строк, а не рассказ компании о себе</figcaption></figure><figure class='st'><img src='media/seo-months.webp' alt='' loading='lazy'><figcaption><s>шаг 3</s><b>Каждый месяц проверяет результат</b>Задаёт нейросетям одни и те же вопросы и считает, назвали вас или нет</figcaption></figure></div><p class='note'>Рекламу в ChatGPT купить можно. А место в самом ответе — нет.</p></div>
+  </div>
+</article>
+</div>
+</section>
+
+<section id="ohotnik" class="s-dark">
+<div class="wrap">
+  <div class="sh"><span class="k">03 · охотник</span><h2>Где взять того, <em>кто это купит</em></h2></div>
+  <p class="sub">Семь услуг отвечают на вопрос «что продавать». Охотник — на второй: <b>кому</b>. Это не услуга на продажу: он находит клиентов вам. Листайте — он выходит на охоту.</p>
+</div>
+<div class="hunt" id="hunt">
+  <div class="hunt-stage">
+    <div class="hunt-cv"><canvas aria-label="Охотник выходит на охоту: стоп-анимация"></canvas><img class="hunt-ph" src="hf/001.webp" alt=""></div>
+    <div class="hunt-txt"><div class='hp' data-from='1'><span class='k'>01 / 05</span><h3>Вы говорите, что продаёте</h3><p>Услугу и город: «маникюр — Киев», «ремонт квартир — Варшава». Охотник берёт след.</p></div><div class='hp' data-from='39'><span class='k'>02 / 05</span><h3>Он прочёсывает город</h3><p>Собирает компании с карт, сайтов, отзывов и соцсетей.</p></div><div class='hp' data-from='71'><span class='k'>03 / 05</span><h3>Находит, кому вы нужны</h3><p>Смотрит каждую: что хорошо, что хромает. Если предложить нечего — отсеивает.</p></div><div class='hp' data-from='136'><span class='k'>04 / 05</span><h3>Пишет письмо под каждого</h3><p>Личное, по фактам этой компании. Вам остаётся отправить и ответить на «да».</p></div><div class='hp' data-from='189'><span class='k'>05 / 05</span><h3>Люди получают — и отвечают</h3><p>Потому что письмо про них, а не про вас. Его хочется дочитать и ответить.</p></div><div class="hunt-bar"><i></i></div></div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="aim">
+    <figure><img src="media/ads-agent.webp" alt="Агент отбирает цели: подходящие светятся, лишние — на паузе" loading="lazy"></figure>
+    <div>
+      <span class="k">что ему нужно от вас</span>
+      <h3>Всё, что нужно охотнику, — <em>наводка</em></h3>
+      <p class="lead">Три вещи: где искать, в какой нише и что вы предлагаете. Дальше он работает сам.</p>
+      <div class="aim-rows">
+        <div><span>локация</span><b>Киев · Оболонь</b></div>
+        <div><span>ниша</span><b>установка окон</b></div>
+        <div><span>услуга</span><b>сайт</b></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 18.11 Влад: блоки 300/236/64, письмо Laser Line и «Факт о них → идея → один вопрос» сняты; кнопку разбора оставить -->
+  <div class="hunt-cta">
+    <button class="pill gold" type="button" data-demo="demo/ohotnik.html?v=20260929a" data-title="Охотник: что делает агент">Разбор охотника по шагам<i>→</i></button>
+  </div>
+</div>
+</section>
+
+<section id="calc" class="s-ink2">
+<div class="wrap">
+  <div class="sh"><span class="k">04 · формула заработка</span><h2>Формула <em>заработка</em></h2></div>
+  <p class="sub w2"><b>30 сообщений → 3 демонстрации → 1 продажа.</b> Так приходит первый клиент. Укажите, сколько сообщений в день готовы отправлять, сколько дней в неделю работаете и с какого чека начинаете, — и посмотрите, как будет расти ваш доход.</p>
+  <div class="calc">
+    <div class="panel ctl">
+      <div class="row"><label for="s1">Сообщений в день <b><span id="v1">30</span></b></label>
+        <input type="range" id="s1" min="10" max="60" step="5" value="30">
+        <p class="hint">Правило тридцати: тридцать личных сообщений каждый рабочий день.</p></div>
+      <div class="row"><label for="s2">Дней в неделю <b><span id="v2">5</span></b></label>
+        <input type="range" id="s2" min="3" max="7" step="1" value="5"></div>
+      <div class="row"><label for="s3">Стартовый чек <b>$<span id="v3">250</span></b></label>
+        <input type="range" id="s3" min="150" max="1200" step="50" value="250">
+        <p class="hint">Первый сайт продают за $250 — с этой цифры считали весь эфир. Дальше поднимаетесь к вилке каталога.</p></div>
+    </div>
+    <div>
+      <div class="panel">
+        <div class="mos">
+          <div class="mo"><span class="k">месяц 1</span><b id="m1">$0</b><div class="split" id="p1"></div></div>
+          <div class="mo"><span class="k">месяц 2</span><b id="m2">$0</b><div class="split" id="p2"></div></div>
+          <div class="mo"><span class="k">месяц 3</span><b id="m3">$0</b><div class="split" id="p3"></div></div>
+        </div>
+        <div class="total"><span>за квартал</span><b id="mq">$0</b></div>
+        <div class="chain">
+          <div><i>Отправлено сообщений в месяц</i><b id="c1">0</b></div>
+          <div><i>Демонстраций</i><b id="c2">0</b></div>
+          <div><i>Продаж в месяц</i><b id="c3">0</b></div>
+        </div>
+        <div class="recoup"><span class="k">на какой день окупается вход</span>
+          <div><span>Bronze · $490</span><b id="r1">—</b></div>
+          <div><span>Silver · $749</span><b id="r2">—</b></div>
+          <div><span>Gold · $1.500</span><b id="r3">—</b></div>
+        </div>
+      </div>
+      <p class="disc"><b>Откуда второй и третий месяц.</b> Трое из восьми клиентов берут у вас что-то ещё — чаще всего AI-продавца и AI-SEO, по $500 в месяц. Эти деньги прибавляются к разовым заказам каждый месяц.<br><br>
+      Это потенциал по конверсиям, а не обещанный доход. Результаты индивидуальны.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="pakety" class="s-dark">
+<div class="wrap">
+  <div class="sh"><span class="k">05 · пакеты</span><h2>Три пакета — <em>цены эфира</em></h2></div>
+  <p class="sub">Зачёркнута обычная цена: столько пакет стоит на сайте. Ниже — цена для тех, кто был на эфире.</p>
+  <div class="pks"><article class='pk'><header><h3>Bronze</h3><span>если делаете сами</span></header><div class='pk-pr'><s>$990</s><b>$490</b><em>цена для участников эфира</em></div><p>Разобраться руками, собрать первый сайт и найти первого клиента среди знакомых.</p><ul class='dots'><li>1 агент: AI-сайты</li><li>5 модулей · 4 недели</li></ul></article><article class='pk'><header><h3>Silver</h3><span>если хотите, чтобы контент работал за вас</span></header><div class='pk-pr'><s>$1.490</s><b>$749</b><em>цена для участников эфира</em></div><p>Четыре услуги в прайсе и контент-завод с вашим двойником — услуга с оплатой каждый месяц.</p><ul class='dots'><li>4 агента: сайты, дизайн, видео, контент-завод</li><li>8 модулей · 6 недель</li></ul></article><article class='pk pk-top'><header><h3>Gold</h3><span>если продавать должен агент</span></header><div class='pk-pr'><s>$2.990</s><b>$1.500</b><em>цена для участников эфира</em></div><p>Реклама приводит клиентов, агент закрывает сделку, а ваш проект мы разбираем на страт-сессиях.</p><ul class='dots'><li>все 7 агентов, включая AI-продавца</li><li>11 модулей · 10 недель</li><li>страт-сессии с Владом</li></ul></article></div>
+  <div class="gift">
+    <div class="gift-t">
+      <span class="b8-k">в подарок · первым 20 купившим</span>
+      <h3>AI‑охотник — <em>бесплатно</em></h3>
+      <p>Инструмент поиска клиентов: идёт по картам, читает сайты и отзывы и пишет каждой компании личное первое сообщение. Охотника не продают — он достаётся только первым 20, кто купит программу.</p>
+    </div>
+    <div class="gift-v">
+      <div class="gift-pr"><span>ценность</span><s>$1.500</s><b>$0</b></div>
+      <div class="gift-left"><b>осталось 4 из 20 мест</b><div class="seats" aria-hidden="true"><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='x'></i><i class='o'></i><i class='o'></i><i class='o'></i><i class='o'></i></div></div>
+    </div>
+  </div>
+  <p class="pay-note"><b>Как купить.</b> Напишите менеджеру, который прислал вам эту страницу, какой пакет выбрали. Оплату принимает он.</p>
+</div>
+</section>
+
+<footer class="foot">
+<div class="wrap foot-g">
+  <div class="foot-b"><a class="brand" href="#top"><i></i>Холст AI-Оператора</a><span>AI-Оператор · Влад Ясько</span></div>
+  <div class="foot-t">
+    <p>Все видео и картинки — работы агентов: сайты, ролики, макеты, переписки и оплаты. Цены — как в каталоге эфира: за пакет или за месяц.</p>
+    <p>Калькулятор показывает потенциал по конверсиям, а не обещанный доход. Результаты индивидуальны.</p>
+  </div>
+  <div class="foot-r"><a class="foot-up" href="/">← все бонусы</a><a class="foot-up" href="#top">наверх ↑</a></div>
+</div>
+</footer>
+
+<dialog class="dlg" id="dlg" aria-label="Разбор агента">
+  <div class="dlg-bar"><b id="dlgT">Что делает агент</b><a id="dlgO" href="#" target="_blank" rel="noopener">в новой вкладке ↗</a><button type="button" id="dlgX" aria-label="Закрыть">✕</button></div>
+  <iframe id="dlgF" title="Разбор агента" src="about:blank" allow="autoplay; fullscreen"></iframe>
+</dialog>
+<script>(function(){
+  'use strict';
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  var $$ = function(s, r){ return [].slice.call((r || document).querySelectorAll(s)); };
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function play(v){ var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+
+  /* ── охотник: стоп-анимация, привязанная к прокрутке ── */
+  var hunt = (function(){
+    var wrap = $('#hunt'); if (!wrap) return null;
+    var box = $('.hunt-cv', wrap), cv = $('canvas', wrap), ctx = cv.getContext('2d');
+    var phases = $$('.hp', wrap), bar = $('.hunt-bar i', wrap);
+    var N = 113, imgs = new Array(N), want = 0, drawn = -1, started = false;
+    phases[0] && phases[0].classList.add('on');
+    function url(i){ return 'hf/' + String(i + 1).padStart(3, '0') + '.webp'; }
+    function start(){
+      if (started) return; started = true;
+      var order = [], seen = {};
+      [16, 8, 4, 2, 1].forEach(function(s){ for (var i = 0; i < N; i += s) if (!seen[i]) { seen[i] = 1; order.push(i); } });
+      if (!seen[N - 1]) order.push(N - 1);
+      var k = 0;
+      function next(){
+        if (k >= order.length) return;
+        var i = order[k++], im = new Image();
+        im.decoding = 'async';
+        im.onload = function(){ imgs[i] = im; if (Math.abs(i - want) <= 4 || drawn < 0) draw(true); next(); };
+        im.onerror = next;
+        im.src = url(i);
+      }
+      for (var c = 0; c < 4; c++) next();
+    }
+    function nearest(i){
+      if (imgs[i]) return i;
+      for (var d = 1; d < N; d++){
+        if (i - d >= 0 && imgs[i - d]) return i - d;
+        if (i + d < N && imgs[i + d]) return i + d;
+      }
+      return -1;
+    }
+    function draw(force){
+      var j = nearest(want); if (j < 0 || (!force && j === drawn)) return;
+      var im = imgs[j], W = cv.width, H = cv.height; if (!W || !H) return;
+      var s = Math.max(W / im.naturalWidth, H / im.naturalHeight), w = im.naturalWidth * s, h = im.naturalHeight * s;
+      ctx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h);
+      drawn = j; box.classList.add('ready');
+    }
+    function resize(){
+      var r = box.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+      drawn = -1; draw(true);
+    }
+    function onScroll(){
+      var r = wrap.getBoundingClientRect(), total = wrap.offsetHeight - innerHeight;
+      if (r.top < innerHeight * 2.5 && r.bottom > -innerHeight) start();
+      var p = Math.min(1, Math.max(0, -r.top / (total || 1)));
+      want = Math.round(p * (N - 1)); draw(false);
+      var f = want * 2 + 1, cur = 0;
+      phases.forEach(function(el, i){ if (f >= +el.getAttribute('data-from')) cur = i; });
+      phases.forEach(function(el, i){ el.classList.toggle('on', i === cur); });
+      bar.style.transform = 'scaleX(' + p.toFixed(3) + ')';
+    }
+    resize();
+    return { onScroll: onScroll, resize: resize };
+  })();
+
+  /* ── верхняя навигация и прогресс ── */
+  var nav = $('#topnav'), tnp = $('#tnp'), hero = $('.hero');
+  var secs = ['svodka', 'uslugi', 'ohotnik', 'calc', 'pakety'].map(function(id){ return document.getElementById(id); });
+  var navLinks = $$('.tn a');
+  var ticking = false, lastCur = -2;
+  function onScroll(){
+    ticking = false;
+    var y = scrollY, h = document.documentElement.scrollHeight - innerHeight;
+    nav.classList.toggle('show', y > hero.offsetHeight * 0.6);
+    tnp.style.transform = 'scaleX(' + (h > 0 ? y / h : 0).toFixed(4) + ')';
+    var cur = -1;
+    secs.forEach(function(s, i){ if (s && s.getBoundingClientRect().top < innerHeight * 0.4) cur = i; });
+    navLinks.forEach(function(a, i){ a.classList.toggle('on', i === cur); });
+    if (cur !== lastCur){ lastCur = cur; var a = navLinks[cur], tn = a && a.parentElement;
+      if (a && tn.scrollWidth > tn.clientWidth) tn.scrollTo({ left: a.offsetLeft - tn.clientWidth / 2 + a.offsetWidth / 2, behavior: 'smooth' }); }
+    if (hunt) hunt.onScroll();
+  }
+  addEventListener('scroll', function(){ if (!ticking){ ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  addEventListener('resize', function(){ if (hunt) hunt.resize(); fitTalls(); onScroll(); });
+  onScroll();
+
+  /* ── видео играют без звука, пока видны ── */
+  if ('IntersectionObserver' in window){
+    var vio = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        var v = e.target;
+        if (e.isIntersecting && e.intersectionRatio >= 0.35){ if (v.preload === 'none') v.preload = 'auto'; play(v); }
+        else if (!v.paused) v.pause();
+      });
+    }, { threshold: [0, 0.35] });
+    $$('video[data-auto]').forEach(function(v){ v.muted = true; vio.observe(v); });
+
+    /* карточки услуг: переписка появляется, лог агента бежит */
+    var sio = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('in'); tick(e.target, true); }
+        else tick(e.target, false);
+      });
+    }, { threshold: 0.2 });
+    $$('.svc').forEach(function(s){ sio.observe(s); });
+  } else {
+    $$('.svc').forEach(function(s){ s.classList.add('in'); });
+  }
+
+  function tick(svc, on){
+    var log = $('.win-log', svc); if (!log) return;
+    if (!on || reduce){ clearInterval(log._t); log._t = null; return; }
+    if (log._t) return;
+    var sp = $$('span', log), k = 0;
+    log._t = setInterval(function(){
+      if (k < sp.length){ sp.forEach(function(s, i){ s.classList.toggle('cur', i === k); }); sp[k].classList.add('on'); k++; }
+      else if (k < sp.length + 3){ k++; sp.forEach(function(s){ s.classList.remove('cur'); }); }
+      else { sp.forEach(function(s){ s.classList.remove('on', 'cur'); }); k = 0; }
+    }, 700);
+  }
+
+  /* ── длинные сайты прокручиваются внутри окошка ── */
+  function fitTalls(){
+    $$('.tall-v img').forEach(function(im){
+      if (!im.complete || !im.naturalHeight) return;
+      var dy = im.getBoundingClientRect().height - im.parentElement.getBoundingClientRect().height;
+      if (dy > 0){
+        im.style.setProperty('--dy', dy.toFixed(0));
+        im.style.animationDuration = Math.max(10, dy / 60).toFixed(1) + 's';
+        im.classList.add('go');
+      }
+    });
+  }
+  $$('.tall-v img').forEach(function(im){ im.addEventListener('load', fitTalls); });
+  fitTalls();
+
+  /* ── плавная прокрутка по якорям: своя, чтобы одинаково во всех браузерах и без «пролёта» через охотника ── */
+  var sraf = 0;
+  function ease(t){ return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function stopScroll(){ if (sraf){ cancelAnimationFrame(sraf); sraf = 0; } }
+  // цель пересчитывается каждый кадр: если выше догрузилась картинка и всё сдвинулось, прокрутка догоняет
+  function smoothTo(getY){
+    stopScroll();
+    var start = scrollY, dur = Math.min(1300, Math.max(500, Math.abs(getY() - start) * 0.25)), t0 = 0, settle = 0;
+    if (reduce) dur = 300;
+    function step(ts){
+      if (!t0) t0 = ts;
+      var k = Math.min(1, (ts - t0) / dur), y = getY();
+      scrollTo(0, start + (y - start) * ease(k));
+      if (k < 1 || (Math.abs(scrollY - getY()) > 2 && settle++ < 40)) sraf = requestAnimationFrame(step);
+      else sraf = 0;
+    }
+    sraf = requestAnimationFrame(step);
+  }
+  ['wheel', 'touchstart', 'keydown'].forEach(function(ev){ addEventListener(ev, stopScroll, { passive: true }); });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]'); if (!a) return;
+    var id = a.getAttribute('href').slice(1), t = id === 'top' ? null : document.getElementById(id);
+    if (id !== 'top' && !t) return;
+    e.preventDefault();
+    smoothTo(function(){
+      if (!t) return 0;
+      var y = t.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(t).scrollMarginTop) || 0);
+      return Math.max(0, Math.min(y, document.documentElement.scrollHeight - innerHeight));
+    });
+    if (history.replaceState) history.replaceState(null, '', '#' + id);
+  });
+
+  /* ── окно разбора «что делает агент» ── */
+  var dlg = $('#dlg'), F = $('#dlgF'), T = $('#dlgT'), O = $('#dlgO');
+  function openDemo(src, title){
+    if (!dlg.showModal){ window.open(src, '_blank'); return; }
+    T.textContent = title || 'Что делает агент'; O.href = src; F.src = src;
+    $$('video').forEach(function(v){ v.pause(); });
+    dlg.showModal(); document.documentElement.classList.add('lock');
+  }
+  dlg.addEventListener('close', function(){ F.src = 'about:blank'; document.documentElement.classList.remove('lock'); });
+  $('#dlgX').addEventListener('click', function(){ dlg.close(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+
+  /* ── клики: разбор, звук, копирование ── */
+  document.addEventListener('click', function(e){
+    var d = e.target.closest('[data-demo]');
+    if (d){ e.preventDefault(); openDemo(d.getAttribute('data-demo'), d.getAttribute('data-title')); return; }
+
+    var b = e.target.closest('.snd');
+    if (b){
+      var v = b.parentElement.querySelector('video'); if (!v) return;
+      var turnOn = v.muted;
+      $$('video').forEach(function(o){ if (o !== v) o.muted = true; });
+      $$('.snd.on').forEach(function(x){ if (x !== b){ x.classList.remove('on'); x.textContent = 'звук'; } });
+      v.muted = !turnOn;
+      b.classList.toggle('on', turnOn);
+      b.textContent = turnOn ? 'звук вкл' : 'звук';
+      if (turnOn){ v.preload = 'auto'; play(v); }
+      return;
+    }
+
+    var c = e.target.closest('[data-copy]');
+    if (c){
+      var t = document.getElementById(c.getAttribute('data-copy')).innerText.trim();
+      var done = function(){ c.textContent = 'Скопировано ✓'; setTimeout(function(){ c.textContent = 'Скопировать сообщение'; }, 1800); };
+      if (navigator.clipboard) navigator.clipboard.writeText(t).then(done, function(){});
+    }
+  });
+
+  /* ── калькулятор (арифметика холста эфира) ──
+     Формула звонка 30.09: сообщения → демонстрации 10% → продажи 30% от демонстраций (30 сообщений = 3 демонстрации = 1 продажа).
+     Допродажа трое из восьми (37,5%): AI-продавец $500 + AI-SEO $500 в месяц. */
+  var K = ['s1','s2','s3','v1','v2','v3','m1','m2','m3','mq','p1','p2','p3','c1','c2','c3','r1','r2','r3'];
+  var el = {}; K.forEach(function(k){ el[k] = document.getElementById(k); });
+  function fmt(n){ n = Math.round(n); if (!isFinite(n) || n < 0) n = 0; return n.toLocaleString('ru-RU').replace(/[\s   ]/g, '.'); }
+  function money(n){ return '$' + fmt(n); }
+  function num(n, d){ d = d || 0; return n.toLocaleString('ru-RU', { minimumFractionDigits: d, maximumFractionDigits: d }).replace(/[   ]/g, ' '); }
+  function plural(n, one, few, many){ var t = n % 10, h = n % 100; if (t === 1 && h !== 11) return one; if (t >= 2 && t <= 4 && (h < 10 || h >= 20)) return few; return many; }
+  function days(price, perMonth){
+    if (perMonth <= 0) return '—';
+    var d = Math.ceil(price / (perMonth / 30));
+    if (d > 180) return 'больше полугода';
+    if (d > 90) return 'больше 90 дней';
+    return d + ' ' + plural(d, 'день', 'дня', 'дней');
+  }
+  var UPSELL = 0.375, RECUR = 1000, DEMO = 0.10, SALE = 0.30;
+  function calc(){
+    var msgs = +el.s1.value, dw = +el.s2.value, check = +el.s3.value;
+    el.v1.textContent = msgs; el.v2.textContent = dw; el.v3.textContent = fmt(check);
+    var sent = msgs * dw * 4.3, demos = sent * DEMO, deals = demos * SALE;
+    var razovye = deals * check, recStep = deals * UPSELL * RECUR;
+    var m1 = razovye, m2 = razovye + recStep, m3 = razovye + recStep * 2;
+    el.m1.textContent = money(m1); el.m2.textContent = money(m2); el.m3.textContent = money(m3); el.mq.textContent = money(m1 + m2 + m3);
+    el.p1.innerHTML = '<em>разовые</em> <i>' + money(razovye) + '</i> · <em>каждый месяц</em> <i>$0</i>';
+    el.p2.innerHTML = '<em>разовые</em> <i>' + money(razovye) + '</i> · <em>каждый месяц</em> <i>' + money(recStep) + '</i>';
+    el.p3.innerHTML = '<em>разовые</em> <i>' + money(razovye) + '</i> · <em>каждый месяц</em> <i>' + money(recStep * 2) + '</i>';
+    el.c1.textContent = num(Math.round(sent)); el.c2.textContent = num(Math.round(demos)); el.c3.textContent = deals < 10 ? num(deals, 1) : num(Math.round(deals));
+    el.r1.textContent = days(490, m1); el.r2.textContent = days(749, m1); el.r3.textContent = days(1500, m1);
+  }
+  if (el.s1){ ['s1','s2','s3'].forEach(function(k){ el[k].addEventListener('input', calc); }); calc(); }
+})();
+</script>
+</body>
+</html>
